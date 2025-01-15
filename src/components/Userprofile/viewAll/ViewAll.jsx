@@ -12,7 +12,13 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import mathes from "../../../assets/mathes.jpeg";
+// import premium from '../../../assets/premium.jpg'
+import AboutPop from "./popupContent/abouPop/AboutPop";
 import "./viewall.scss";
+import EducationPop from "./popupContent/educationPop/EducationPop";
+import FamilyPop from "./popupContent/familyPop/FamilyPop";
+import LifeStylePop from "./popupContent/lifeStylePop/LifeStylePop";
+import PreferencePop from "./popupContent/preferencePop/PreferencePop";
 
 const ViewAll = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,7 +27,7 @@ const ViewAll = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   const [details, setDetails] = useState(0);
-  const totalItems = 50; // Example total items count
+  const totalItems = 30; // Example total items count
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handleChange = (event, newValue) => {
@@ -57,6 +63,23 @@ const ViewAll = () => {
   useEffect(() => {
     getData(currentPage);
   }, [currentPage]);
+
+  const renderContent = () => {
+    switch (details) {
+      case 0:
+        return <AboutPop />;
+      case 1:
+        return <FamilyPop />;
+      case 2:
+        return <EducationPop />;
+      case 3:
+        return <LifeStylePop />;
+      case 4:
+        return <PreferencePop />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -150,10 +173,10 @@ const ViewAll = () => {
           <Box className="popup-list">
             <DialogContent maxWidth="md" style={{ padding: "0px" }}>
               <Box className="user-name-age">
-                <h3 className="user-name-details-heading">
+                {/* <h3 className="user-name-details-heading">
                   Akshatha N L , 27 Years (Last Seen: 3/27/23 12:31 PM){" "}
                   {selectedCardDetails.id}
-                </h3>
+                </h3> */}
                 <DialogActions />
               </Box>
               <Box className="user-other-details">
@@ -187,7 +210,9 @@ const ViewAll = () => {
                         label="Preference"
                       />
                     </Tabs>
-                    <Box className="viewall-tabs-content"></Box>
+                    <Box className="viewall-tabs-content">
+                    {renderContent()}
+                    </Box>
                   </Box>
                 </Box>
               </Box>

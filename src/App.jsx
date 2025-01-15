@@ -36,6 +36,7 @@ import Profile from './components/Userprofile/Profile/Profile';
 import MyMatches from './components/Userprofile/myMatches/MyMatches';
 import MyInterest from './components/Userprofile/myIntrest/MyIntrest';
 import ViewAll from './components/Userprofile/viewAll/ViewAll';
+import Search from './components/Userprofile/search/Search';
 // import UserDashboard from './components/Userprofile/userdDashboard/UserDashboard';
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -99,6 +100,7 @@ const App = () => {
           <Route path='MyMatches' element={<MyMatches/>}/>
           <Route path='myintrest' element={<MyInterest/>}/>
           <Route path='viewAll' element={<ViewAll/>}/>
+          <Route path='search' element={<Search/>}/>
         </Route>
        
       </Routes>

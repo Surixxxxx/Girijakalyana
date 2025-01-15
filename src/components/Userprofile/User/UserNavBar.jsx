@@ -69,7 +69,7 @@ const UserNavBar = () => {
   };
 
   const handleSearchClick = () => {
-    alert("Search clicked!");
+    navigation("/user/search");
   };
 
   const toggleSidebar = () => {
