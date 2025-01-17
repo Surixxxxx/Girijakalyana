@@ -373,7 +373,7 @@ const handleProfileDialogClose = () => {
         <Button
           variant="contained"
           component="label"
-          style={{ marginTop: "10px",textTransform:'capitalize' }}
+          style={{ marginTop: "10px",textTransform:'capitalize',background:'#34495e' }}
         >
           Upload Profile Picture
           <input type="file" hidden onChange={handleImageUpload} />

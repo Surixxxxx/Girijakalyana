@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { styled } from "@mui/system";
-import Slider from "react-slick"; // Install this with `npm install react-slick slick-carousel`
+import Slider from "react-slick"; 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import wall1 from '../../assets/wallpaper/wall1.jpg'
@@ -74,7 +74,7 @@ const HeroSlider = () => {
           Find Your Perfect Match
         </Typography>
         <Typography variant="h6" fontWeight={700} paragraph fontFamily={'Outfit sans-serif'}>
-          Join the most trusted matrimony platform and start your journey towards a lifetime of happiness.
+          Join the most trusted  platform and start your journey towards a lifetime of happiness.
         </Typography>
         <Button variant="contained" size="large" sx={{textTransform:'capitalize'}} color="secondary" fontFamily={'Outfit sans-serif'}>
           Get Started

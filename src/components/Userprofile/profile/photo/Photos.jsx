@@ -137,10 +137,11 @@ const Photos = () => {
                 variant="contained"
                 onClick={() => alert("Image saved!")}
                 sx={{
-                  backgroundColor: "#1976d2",
-                  "&:hover": {
-                    backgroundColor: "#115293",
-                  },
+                  backgroundColor: "#34495e",
+                  // "&:hover": {
+                  //   backgroundColor: "#1976d2",
+                  //   textTransform:'capitalize'
+                  // },
                 }}
               >
                 Save

@@ -57,13 +57,13 @@
   background: #1a4f72;
   color: white;
   width: 270px;
-  position: fixed; /* Fixed to prevent scrolling */
-  top: 75.5px; /* Adjust to match navbar height */
+  position: fixed; 
+  top: 75.5px; 
   left: 0;
-  height: calc(100vh - 70px); /* Full viewport height minus navbar */
+  height: calc(100vh - 70px); 
   padding: 10px;
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
-  overflow: hidden; /* Hide horizontal overflow */
+  overflow-y: auto; 
+  overflow: hidden; 
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   z-index: 1000;

@@ -189,10 +189,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenFatherName, false)}
                 color="secondary"
+                sx={{textTransform:'capitalize'}}
               >
                 Cancel
               </Button>
-              <Button type="submit" color="primary">
+              <Button type="submit" sx={{backgroundColor:'#34495e',color:'#fff',textTransform:'capitalize'}}>
                 Save
               </Button>
             </DialogActions>

@@ -150,7 +150,9 @@ const UserTable = () => {
                 <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>{user.email}</TableCell>
                 <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>{user.phone}</TableCell>
                 <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>-</TableCell>
-                <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>-</TableCell>
+                <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px',color:'blue'}}>
+                {user.id % 2 === 0 ? "Silver" : "Premium"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

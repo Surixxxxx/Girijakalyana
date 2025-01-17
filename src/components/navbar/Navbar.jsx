@@ -1,43 +1,53 @@
-import React, { useState } from 'react'
-import './Navbar.scss'
-import { Button, Dialog, TextField, Typography, Box, InputAdornment } from '@mui/material'
-import HeroSlider from '../hero/HeroSlider'
-import logo from '../../assets/logo.png'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom';
-import Footer from '../footer/Footer'
+import React, { useState } from 'react';
+import './Navbar.scss';
+import {
+  Button,
+  Dialog,
+  TextField,
+  Typography,
+  Box,
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import { MdEmail, MdLock } from 'react-icons/md';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false)
-  const [isRegister, setIsRegister] = useState(false);
+  const [open, setOpen] = useState(false);
   const [openAdminDialog, setOpenAdminDialog] = useState(false);
-  const [enterUsername, setEnterUsername] = useState('');  // Admin username state
-  const [username, setUsername] = useState('');  // Admin username state
+  const [enterUsername, setEnterUsername] = useState('');  
   const [enterPassword, setEnterPassword] = useState('');
-  const [password, setPassword] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
+  const [loginData, setLoginData] = useState({ username: '', password: '' });
+  const [registerData, setRegisterData] = useState({
+    firstName: '',
+    lastName: '',
+    gender: '',
+    dob: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   const navigate = useNavigate();
 
-  // Open and close the Admin Login dialog
   const handleOpenAdminDialog = () => setOpenAdminDialog(true);
   const handleCloseAdminDialog = () => setOpenAdminDialog(false);
 
-  const handleOpen = () => {
-    setOpen(true)
-  }
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const handleToggleForm = () => {
-    setIsRegister(!isRegister)
-  }
+  const handleToggleForm = () => setIsRegister((prev) => !prev);
 
   const handleAdminLogin = () => {
     const Username = 'admin';
     const Password = 'admin123';
 
-    if (username === Username && password === Password) {
+    if (enterUsername === Username && enterPassword === Password) {
       sessionStorage.setItem('isAdmin', 'true'); // Store the admin status
       navigate('/admin'); 
       handleCloseAdminDialog();
@@ -45,21 +55,36 @@ const Navbar = () => {
       alert('Invalid credentials');
     }
   };
-  const handleuserlogin = () => {
-    const enterUsername = 'user';
-    const enterPassword = 'user123';
 
-    if (enterUsername === enterUsername && enterPassword === enterPassword) {
-      sessionStorage.setItem('isLogged', 'true'); // Store the admin status
-      navigate('/user'); 
-      handleCloseAdminDialog();
+  const handleLogin = () => {
+    if (loginData.username === 'user' && loginData.password === 'user123') {
+      sessionStorage.setItem('isLogged', 'true');
+      navigate('/user');
+      handleClose();
     } else {
-      alert('Invalid credentials');
+      alert('Invalid username or password');
     }
   };
- 
 
-  
+  const handleRegister = () => {
+    if (registerData.password !== registerData.confirmPassword) {
+      alert('Passwords do not match!');
+    } else {
+      alert('Account created successfully!');
+      handleClose();
+    }
+  };
+
+  const handleChangeLogin = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleChangeRegister = (e) => {
+    const { name, value } = e.target;
+    setRegisterData((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
     <div>
       <div className="navbar-container">
@@ -67,31 +92,63 @@ const Navbar = () => {
           <h3>Girija❤️Kalyana</h3>
           <div className="menu">
             <ul>
-            <li><a><Link className='link' to="/">Home</Link></a></li>
-              <li><Link className='link' to="/service">Service</Link></li>
-              <li><Link className='link' to="/about">About Us</Link></li>
-              <li><Link className='link' to="/privacy-policy">Privacy Policy</Link></li>
-              <li><Link className='link' to="/contact">Contact Us</Link></li>
+              <li>
+                <Link className="link" to="/">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link className="link" to="/service">
+                  Service
+                </Link>
+              </li>
+              <li>
+                <Link className="link" to="/about">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link className="link" to="/privacy-policy">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link className="link" to="/contact">
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
           <Typography>
             <Button
-              variant="text"
-              size='large'
+              variant="contained"
+              size="large"
               onClick={handleOpen}
-              style={{ backgroundColor: 'black', marginRight: '25px',
-                width:'150px',color:'aqua',fontWeight:700,height:'42px' }}
-              className="btn"
+              style={{
+                backgroundColor: 'black',
+                marginRight: '25px',
+                width: '150px',
+                color: 'aqua',
+                fontWeight: 700,
+                height: '42px',
+                textTransform: 'capitalize',
+              }}
             >
               Login
             </Button>
             <Button
               variant="contained"
-              size='large'
-              onClick={handleOpenAdminDialog} 
-              style={{ backgroundColor: 'black', marginRight: '25px',
-                width:'150px',color:'aqua',fontWeight:700,height:'42px' }}
-              className="btn"
+              size="large"
+              onClick={handleOpenAdminDialog}
+              style={{
+                backgroundColor: 'black',
+                marginRight: '25px',
+                width: '150px',
+                color: 'aqua',
+                fontWeight: 700,
+                height: '42px',
+                textTransform: 'capitalize',
+              }}
             >
               Admin
             </Button>
@@ -99,137 +156,163 @@ const Navbar = () => {
         </div>
       </div>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        sx={{
-          '& .MuiDialog-paper': {
-            width: '350px',
-            height: '480px',
-            background: '#fff',
-            backdropFilter: 'blur(10px)',
-            // boxShadow: '0 4px 30px rgba(224, 219, 219, 0.93)',
-            borderRadius: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '20px',
-            textAlign: 'center',
-            marginTop: '70px',
-            
-          },
-        }}
-      >
+      {/* Login/Register Dialog */}
+      <Dialog open={open} onClose={handleClose} >
+      
         <Box
           sx={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            marginBottom: '10px',
+            padding: '20px',
+            maxWidth: '600px',
+            width: '90%',
+            
+            display: 'flex',
+            flexDirection: 'column',
+            // gap: '10px',
+            alignItems: 'center',
           }}
         >
-          <img
-            src="src/assets/profile.jpg"
-            alt="Profile"
-            style={{ width: '100%', height: '100%' }}
-          />
+          <Typography variant="h4" textAlign="center" fontWeight={700} color='#34495e' mt={1} mb={1}>
+            {isRegister ? 'Create Your Account' : 'Login'}
+      
+          </Typography>
+          {isRegister ? (
+            <form style={{ width: '100%' }}>
+              <Box display="flex" gap={2} flexWrap="wrap" marginBottom={2}>
+                <TextField
+                  style={{ flex: 1 }}
+                  label="First Name"
+                  name="firstName"
+                  value={registerData.firstName}
+                  onChange={handleChangeRegister}
+                  variant="outlined"
+                />
+                <TextField
+                  style={{ flex: 1 }}
+                  label="Last Name"
+                  name="lastName"
+                  value={registerData.lastName}
+                  onChange={handleChangeRegister}
+                  variant="outlined"
+                />
+              </Box>
+              <Box display="flex" gap={2} flexWrap="wrap" marginBottom={2}>
+                <FormControl style={{ flex: 1 }}>
+                  <InputLabel>Gender</InputLabel>
+                  <Select
+                    name="gender"
+                    value={registerData.gender}
+                    onChange={handleChangeRegister}
+                  >
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  style={{ flex: 1 }}
+                  label="Date of Birth"
+                  name="dob"
+                  value={registerData.dob}
+                  onChange={handleChangeRegister}
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Box>
+              <TextField
+                fullWidth
+                label="Email Address"
+                name="email"
+                value={registerData.email}
+                onChange={handleChangeRegister}
+                variant="outlined"
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                value={registerData.password}
+                onChange={handleChangeRegister}
+                type="password"
+                variant="outlined"
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Confirm Password"
+                name="confirmPassword"
+                value={registerData.confirmPassword}
+                onChange={handleChangeRegister}
+                type="password"
+                variant="outlined"
+                margin="normal"
+              />
+              <Button
+              
+                variant="contained"
+                onClick={handleRegister}
+                sx={{
+                  background: '#34495e',
+                  width:'50%',
+                  display:'flex',
+                  justifySelf:'center',
+                  marginBottom:'15px',
+                   marginTop:'15px'
+                }}
+              >
+                Create Account
+              </Button>
+            </form>
+          ) : (
+            <form style={{ width: '100%',height:'90%',padding:'40px 20px',display:'flex',alignItems:'center',flexDirection:'column' }}>
+              <TextField
+               sx={{width:'400px'}}
+                label="Username"
+                name="username"
+                value={loginData.username}
+                onChange={handleChangeLogin}
+                variant="outlined"
+                margin="normal"
+              />
+              <TextField
+              sx={{width:'400px',marginBottom:'20px'}}
+                label="Password"
+                name="password"
+                value={loginData.password}
+                onChange={handleChangeLogin}
+                type="password"
+                variant="outlined"
+                margin="normal"
+              />
+             <Typography sx={{color: '#1976d2',cursor:'pointer'}} mb={1.5} >Forgot Password?</Typography>
+              <Button
+                
+                variant="contained"
+                onClick={handleLogin}
+                sx={{
+                  width:'250px',
+                  background: '#34495e',
+                }}
+              >
+                Login
+              </Button>
+            </form>
+          )}
+          <Typography
+            variant="body2"
+            textAlign="center"
+            sx={{ cursor: 'pointer', color: '#1976d2',marginBottom:'10px' }}
+            onClick={handleToggleForm}
+          >
+            {isRegister
+              ? 'Already have an account? Login'
+              : "Don't have an account? Register"}
+          </Typography>
         </Box>
-
-        <Typography variant="h6" sx={{ marginBottom: '20px', fontWeight: 'bold', color: 'black' }}>
-          {isRegister ? 'REGISTER FORM' : 'LOGIN FORM'}
-        </Typography>
-
-        <TextField
-          placeholder="Enter username"
-          variant="outlined"
-          margin="dense"
-          value={enterUsername}
-          onChange={(e) => setEnterUsername(e.target.value)} 
-          fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                {/* <PersonIcon /> */}
-              </InputAdornment>
-            ),
-            style: { color: 'black', marginBottom: '18px',
-              fontWeight:700,borderRadius:'13px' },
-          }}
-        />
-
-        {isRegister && (
-          <TextField
-            placeholder="Enter email"
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  {/* <EmailIcon /> */}
-                </InputAdornment>
-              ),
-              style: { color: 'black', 
-                marginBottom: '15px',borderRadius:'13px',
-              fontWeight:700 },
-            }}
-          />
-        )}
-
-        <TextField
-          placeholder="Enter password"
-          variant="outlined"
-          type="password"
-          margin="dense"
-          value={enterPassword}
-          onChange={(e) => setEnterPassword(e.target.value)} 
-          fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                {/* <LockOpenIcon /> */}
-              </InputAdornment>
-            ),
-            style: { color: 'black', 
-              marginBottom: '15px',borderRadius:'13px',
-              fontWeight:700 },
-          }}
-        />
-
-        {!isRegister && <Typography sx={{ color: 'black' }}>Forget Password?</Typography>}
-
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#1a4f72',
-            marginTop: '20px',
-            width: '60%',
-           
-            borderRadius: '10px',
-            '&:hover': { backgroundColor: 'green' },
-          }}
-          onClick={handleuserlogin}
-        >
         
-          {isRegister ? 'REGISTER' : 'LOGIN'}
-        </Button>
-
-        <Typography
-          onClick={handleToggleForm}
-          sx={{
-            color: 'black',
-            marginTop: '15px',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-          }}
-        >
-          {isRegister ? 'Already have an account? Login' : "Don't have an account? Register"}
-        </Typography>
       </Dialog>
 
-       {/* Admin Login Dialog */}
-       <Dialog
+
+      <Dialog
         open={openAdminDialog}
         onClose={handleCloseAdminDialog}
         sx={{
@@ -272,8 +355,8 @@ const Navbar = () => {
           placeholder="Enter username"
           variant="outlined"
           margin="dense"
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)} 
+          value={enterUsername} 
+          onChange={(e) => setEnterUsername(e.target.value)} 
           fullWidth
           InputProps={{
             startAdornment: <InputAdornment position="start"></InputAdornment>,
@@ -285,8 +368,8 @@ const Navbar = () => {
           placeholder="Enter password"
           variant="outlined"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={enterPassword}
+          onChange={(e) => setEnterPassword(e.target.value)}
           margin="dense"
           fullWidth
           InputProps={{
@@ -325,10 +408,9 @@ const Navbar = () => {
         </Button>
         </Typography>
       </Dialog>
-    
+
     </div>
+  );
+};
 
-  )
-}
-
-export default Navbar
+export default Navbar;

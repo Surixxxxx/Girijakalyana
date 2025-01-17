@@ -28,7 +28,7 @@ const PromotersUsersData = () => {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
 
-  // Fetch data
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,13 +46,13 @@ const PromotersUsersData = () => {
   // Search handler
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
-    setCurrentPage(1); // Reset to first page when search changes
+    setCurrentPage(1); 
   };
 
   // Rows per page handler
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(1); // Reset to first page when rows per page changes
+    setCurrentPage(1); 
   };
 
   // Filter records based on search input

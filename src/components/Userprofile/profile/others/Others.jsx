@@ -32,7 +32,7 @@ const Others = () => {
         sx={{
           fontWeight: "bold",
           marginBottom: "16px",
-          color: "#1976d2",
+          color: "#34495e",
           textAlign: "center",
         }}
       >
@@ -68,27 +68,25 @@ const Others = () => {
       >
         <Button
           variant="contained"
-          startIcon={<FaCheck />}
+        
           onClick={() => alert("Submitted: " + otherInfo)}
           sx={{
             backgroundColor: "#1976d2",
-            "&:hover": {
-              backgroundColor: "#115293",
-            },
+              textTransform:'capitalize',
+             background:'#34495e'
           }}
         >
           Submit
         </Button>
         <Button
           variant="outlined"
-          startIcon={<FaRedo />}
+         
           onClick={handleReset}
           sx={{
-            borderColor: "#1976d2",
-            color: "#1976d2",
-            "&:hover": {
-              backgroundColor: "#f0f7ff",
-            },
+            borderColor: "#34495e",
+            color: "black",
+              textTransform:'capitalize',
+           
           }}
         >
           Reset

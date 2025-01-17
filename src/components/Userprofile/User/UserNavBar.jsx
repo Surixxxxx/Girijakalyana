@@ -44,12 +44,12 @@ const UserNavBar = () => {
   };
 
   const handleLogout = () => {
-    alert("Logged out!");
+    navigation("/");
     setAnchorEl(null);
   };
 
   const handleDashboardClick = () => {
-    // navigation("/user/userdashboard");
+    navigation("/user/userdashboard");
   };
 
   const handleProfileClick = () => {
@@ -76,14 +76,6 @@ const UserNavBar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  
-    // useEffect(() => {
-    //   const token = localStorage.getItem('token'); 
-    //   if (!token) {
-    //     navigation('/user'); 
-    //   }
-    // }, []);
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -100,7 +92,7 @@ const UserNavBar = () => {
           }}
         >
           <Toolbar>
-            {/* Menu Icon */}
+            
             <IconButton edge="start" color="inherit" onClick={toggleSidebar} sx={{ mr: 2 }}>
               <FaBars />
             </IconButton>
@@ -114,7 +106,7 @@ const UserNavBar = () => {
               Girija❤️Kalyana
             </Typography>
 
-            {/* Profile Picture with Dropdown Menu */}
+           
             <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
               <Typography
                 color="#fff"
@@ -157,8 +149,8 @@ const UserNavBar = () => {
               boxSizing: "border-box",
               background: "#1a4f72",
               color: "#fff",
-              transition: "width 0.6s ease, opacity 0.6s ease", // Smooth transition with slight delay
-              opacity: isSidebarOpen ? 1 : 0, // Fade out effect for closing
+              transition: "width 0.6s ease, opacity 0.6s ease", 
+              opacity: isSidebarOpen ? 1 : 0, 
             },
           }}
         >
@@ -208,12 +200,12 @@ const UserNavBar = () => {
             flexGrow: 1,
          
             marginTop:2,
-            paddingLeft: isSidebarOpen ? `30px` : "20px", // Adjust content padding
-            transition: "padding-left 0.4s ease", // Smooth transition for padding-left
+            paddingLeft: isSidebarOpen ? `30px` : "20px", 
+            transition: "padding-left 0.4s ease", 
           }}
         >
           <Toolbar />
-          {/* Main content can go here */}
+         
           <Outlet />
         </Box>
       </Box>

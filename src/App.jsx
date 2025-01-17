@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/navbar/Navbar';
-import Footer from './components/footer/Footer';
 import HeroSlider from './components/hero/HeroSlider';
 import Connect from './components/howWorks/Connect';
 import Members from './components/members/Member';
@@ -30,45 +28,42 @@ import RenewalsReportsData from './components/Admin/Reports/RenewalsReportsData'
 import ReceiptsReportsData from './components/Admin/Reports/ReceiptsReportsData';
 import UserNavBar from './components/Userprofile/User/UserNavBar';
 import NotificationData from './components/Admin/notificationDta/NotificationData';
-// import UserDashboard from './components/Userprofile/userdDashboard/UserDashboard';
 import Servieces from './components/servieces/Servieces';
 import Profile from './components/Userprofile/Profile/Profile';
 import MyMatches from './components/Userprofile/myMatches/MyMatches';
 import MyInterest from './components/Userprofile/myIntrest/MyIntrest';
 import ViewAll from './components/Userprofile/viewAll/ViewAll';
 import Search from './components/Userprofile/search/Search';
-// import UserDashboard from './components/Userprofile/userdDashboard/UserDashboard';
+import UserDashboard from './components/Userprofile/userdDashboard/UserDashboard';
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    // Check sessionStorage for admin status on initial render
+    
     const adminStatus = sessionStorage.getItem('isAdmin');
     const loginStatus = sessionStorage.getItem('islogged');
-    setIsAdmin(adminStatus === 'true'); // Ensure boolean value
-    setIsLogged(loginStatus === 'true'); // Ensure boolean value
+    setIsAdmin(adminStatus === 'true');
+    setIsLogged(loginStatus === 'true'); 
   }, []);
 
   return (
     <Router>
-      {/* Show Navbar and Footer on non-admin, non-logged-in pages */}
-      {/* {!(isAdmin || isLogged) && } */}
-
+     
       <Routes>
-        {/* Public Routes */}
+      
         <Route path="/" element={<><HeroSlider /><Connect /><Members /></>} />
         <Route path="/service" element={<Servieces />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/privacy-policy" element={<Privacy />} />
         <Route path="/contact" element={<ContactUs />} />
 
-        {/* Admin Routes */}
+       
         <Route
           path="/admin"
           element={ <AdminDashboard /> }
         >
-          {/* Nested Admin Routes */}
+        
           <Route path="user-table" element={<UserTable />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="userData" element={<UserData />} />
@@ -91,12 +86,12 @@ const App = () => {
           <Route path="notification" element={<NotificationData />} />
         </Route>
 
-        {/* User Routes */}
         <Route
           path="/user"
           element={ <UserNavBar /> }
         >
           <Route path='profile' element={<Profile/>}/>
+          <Route path='userdashboard' element={<UserDashboard/>}/>
           <Route path='MyMatches' element={<MyMatches/>}/>
           <Route path='myintrest' element={<MyInterest/>}/>
           <Route path='viewAll' element={<ViewAll/>}/>

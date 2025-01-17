@@ -220,23 +220,25 @@ const ParentsPrefer = () => {
       >
         <Button
           variant="contained"
-          startIcon={<FaCheck />}
+      
           onClick={() => alert("Preferences Submitted!")}
           sx={{
-            backgroundColor: "#1976d2",
+            backgroundColor: "#34495e",
             "&:hover": { backgroundColor: "#115293" },
+             textTransform:'capitalize'
           }}
         >
           Submit
         </Button>
         <Button
           variant="outlined"
-          startIcon={<FaRedo />}
+       
           onClick={handleReset}
           sx={{
             borderColor: "#1976d2",
             color: "#1976d2",
             "&:hover": { backgroundColor: "#f0f7ff" },
+            textTransform:'capitalize'
           }}
         >
           Reset

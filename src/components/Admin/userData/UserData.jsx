@@ -29,7 +29,6 @@ const UserData = () => {
   const [rowsPerPage, setRowsPerPage] = useState(6);
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
-  const [showActive, setShowActive] = useState(true);
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -50,6 +49,8 @@ const UserData = () => {
   const totalPages = Math.ceil(records.length / rowsPerPage);
 
   const handlePageClick = (event, value) => setCurrentPage(value);
+  
+  
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value, 10));
     setCurrentPage(1);
@@ -58,7 +59,11 @@ const UserData = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get("https://jsonplaceholder.typicode.com/users");
-      setRecords(response.data);
+      const updatedData = response.data.map((user) => ({
+        ...user,
+        status: "Pending", // Initialize with default status
+      }));
+      setRecords(updatedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -70,11 +75,28 @@ const UserData = () => {
 
   const handleSearchChange = (event) => setSearch(event.target.value);
 
+  const handleUpgrade = (id) => {
+    setRecords((prevRecords) =>
+      prevRecords.map((user) =>
+        user.id === id
+          ? { ...user, status: user.status === "Pending" ? "Active" : "Pending" }
+          : user
+      )
+    );
+  };
+
   return (
     <div className="upgrade-user">
       <div className="fist-head">
         <Typography display="flex" alignItems="center">
-          <Typography variant="h4" fontWeight={600} color="#34495e" fontFamily={"Outfit sans-serif"}>Users Upgrade</Typography>
+          <Typography
+            variant="h4"
+            fontWeight={600}
+            color="#34495e"
+            fontFamily={"Outfit sans-serif"}
+          >
+            Users Upgrade
+          </Typography>
           <div className="rows-per-page">
             <FormControl sx={{ width: 100 }}>
               <InputLabel>Rows</InputLabel>
@@ -109,41 +131,64 @@ const UserData = () => {
       </div>
 
       {/* Table */}
-      <TableContainer  component={Paper} sx={{ marginTop: 2 }}>
+      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>Registration No</TableCell>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>Name</TableCell>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>Email Id</TableCell>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>Gender</TableCell>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>User Type</TableCell>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>Status</TableCell>
-              <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'18px'}}>Upgrade</TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                Registration No
+              </TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                Name
+              </TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                Email Id
+              </TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                Gender
+              </TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                User Type
+              </TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                Status
+              </TableCell>
+              <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "18px" }}>
+                Upgrade
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredRows.length > 0 ? (
               filteredRows.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>-</TableCell>
-                  <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>{row.name}</TableCell>
-                  <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>{row.email}</TableCell>
-                  <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>M-</TableCell>
-                  <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>-</TableCell>
-                  <TableCell sx={{fontFamily:"Outfit sans-serif",fontSize:'17px'}}>
-                    {showActive ? (
-                      <Typography color="green">Active</Typography>
-                    ) : (
-                      <Typography color="orange">Pending</Typography>
-                    )}
+                  <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "17px" }}>
+                    {row.id}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "17px" }}>
+                    {row.name}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "17px" }}>
+                    {row.email}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "17px" }}>
+                    -
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "17px" }}>
+                    -
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Outfit sans-serif", fontSize: "17px" }}>
+                    <Typography color={row.status === "Pending" ? "orange" : "green"}>
+                      {row.status}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
-                      color="primary"
+                      color="success"
                       size="small"
-                      sx={{ textTransform: "none" }}
+                      sx={{ textTransform: "capitalize" }}
+                      onClick={() => handleUpgrade(row.id)}
                     >
                       Upgrade
                     </Button>
