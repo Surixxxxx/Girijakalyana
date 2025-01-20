@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Dialog,
@@ -23,8 +23,22 @@ const About = ({ render }) => {
   const [address, setAddress] = useState("Bengalore");
   const [occupationCountry, setOccupationCountry] = useState("India");
   const [language, setLanguage] = useState("Kannada");
-
   const [dialog, setDialog] = useState({ open: false, type: "" });
+  const [mobail, setMobail] = useState('');
+  const [email, setEmail] = useState('');
+
+ useEffect(() => {
+    const storedMobail = sessionStorage.getItem('mobail');
+    const storedEmail = sessionStorage.getItem('email');
+
+    console.log('Retrieved from sessionStorage:', { storedMobail, storedEmail });
+
+   
+    if (storedMobail) setMobail(storedMobail);
+    if (storedEmail) setEmail(storedEmail);
+    // if (storedLastName) setLastName(storedLastName);
+  }, []);
+
 
   const handleOpenDialog = (type) => setDialog({ open: true, type });
   const handleCloseDialog = () => setDialog({ open: false, type: "" });
@@ -59,11 +73,11 @@ const About = ({ render }) => {
               <TableBody>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Email Id</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>malli@gmail.com</TableCell>
+                  <TableCell sx={{ fontSize: "1rem" }}>{email}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Phone No.</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>9986362636</TableCell>
+                  <TableCell sx={{ fontSize: "1rem" }}>{mobail}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Address</TableCell>

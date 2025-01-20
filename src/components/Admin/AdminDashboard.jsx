@@ -224,13 +224,14 @@ const handleProfileDialogClose = () => {
           <List>
           <ListItem
             onClick={handleProfileDialogOpen}
-            style={{ fontSize: "22px", cursor: "pointer", paddingBottom: "5px" }}
+            style={{  cursor: "pointer", }}
           >
             <CgProfile /> Profile
           </ListItem>
 
-
-            <ListItem onClick={handleDashboard} style={{ fontSize: '22px', cursor: 'pointer',paddingBottom:'0px'}}>
+            <ListItem onClick={handleDashboard} 
+            style={{ cursor: 'pointer'}}
+            >
               < FaDashcube/> Dashboard
             </ListItem>
 
@@ -387,10 +388,10 @@ const handleProfileDialogClose = () => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleProfileDialogClose} color="secondary">
+        <Button onClick={handleProfileDialogClose}sx={{color:'#34495e'}}>
           Cancel
         </Button>
-        <Button onClick={handleProfileDialogClose} color="primary">
+        <Button onClick={handleProfileDialogClose} color="success">
           Save
         </Button>
       </DialogActions>

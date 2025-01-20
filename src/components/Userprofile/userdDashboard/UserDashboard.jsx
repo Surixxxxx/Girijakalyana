@@ -18,7 +18,21 @@ const UserDashboard = () => {
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [userCard, setUserCard] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const cardsPerPage = 3;
+
+  useEffect(() => {
+    const storedFirstName = sessionStorage.getItem('firstName');
+    const storedLastName = sessionStorage.getItem('lastName');
+    const storedMobail = sessionStorage.getItem('mobail');
+
+    console.log('Retrieved from sessionStorage:', { storedFirstName, storedLastName });
+
+   
+    if (storedFirstName) setFirstName(storedFirstName);
+    // if (storedLastName) setLastName(storedLastName);
+  }, []);
 
   // const handleCardClick = (index) => {
   //   const selectedCard = userCard[index];
@@ -121,12 +135,13 @@ const UserDashboard = () => {
         backgroundColor: "#f4f6f8",
         minHeight: "100vh",
         padding: "24px",
-        paddingLeft:'260px'
+        // paddingLeft:'260px'
       }}
     >
       <Box sx={{ textAlign: "center", mb: 4 }}>
-        <Typography variant="h3" fontWeight="bold" color="#34495e">
-          Welcome Ramesh V
+        <Typography variant="h3" fontWeight="bold" color="#34495e" textTransform={'capitalize'}>
+        Welcome {firstName}
+         {/* {lastName} */}
         </Typography>
         <Divider sx={{ mt: 2 }} />
       </Box>

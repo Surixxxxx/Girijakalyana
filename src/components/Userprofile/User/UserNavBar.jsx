@@ -18,9 +18,10 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { FaDashcube, FaUsersViewfinder } from "react-icons/fa6";
 import { Outlet, useNavigate } from "react-router-dom";
+import UserDashboard from "../userdDashboard/UserDashboard";
 
 const drawerWidth = 240;
-const user = "Ramesh V";
+// const user = "Ramesh V";
 
 const theme = createTheme({
   typography: {
@@ -32,8 +33,18 @@ const UserNavBar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  const navigation=useNavigate();
+ const [firstName, setFirstName] = useState('');
 
+ useEffect(() => {
+    const storedFirstName = sessionStorage.getItem('firstName');
+    // const storedLastName = sessionStorage.getItem('lastName');
 
+    console.log('Retrieved from sessionStorage:', { storedFirstName });
+
+   
+    if (storedFirstName) setFirstName(storedFirstName);
+    // if (storedLastName) setLastName(storedLastName);
+  }, []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -49,7 +60,7 @@ const UserNavBar = () => {
   };
 
   const handleDashboardClick = () => {
-    navigation("/user");
+    navigation("/user/userdashboard");
   };
 
   const handleProfileClick = () => {
@@ -78,6 +89,7 @@ const UserNavBar = () => {
 
 
   return (
+    <>
     <ThemeProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -110,13 +122,14 @@ const UserNavBar = () => {
             <IconButton onClick={handleMenuOpen} sx={{ p: 0 }}>
               <Typography
                 color="#fff"
-                fontFamily={"Outfit, sans-serif"}
+                fontFamily={"Outfit sans-serif"}
                 fontSize={"20px"}
                 marginRight={"10px"}
+                textTransform={'capitalize'}
               >
-                {user}
+                {firstName}
               </Typography>
-              <Avatar src="https://via.placeholder.com/150" alt={user[0]} sx={{ color: "black", fontWeight: "bold" }} />
+              <Avatar src="https://via.placeholder.com/150" alt={firstName[0]} sx={{ color: "black", fontWeight: "bold",textTransform:'uppercase' }} />
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -159,8 +172,8 @@ const UserNavBar = () => {
             <List>
               <ListItem>
                 <Box sx={{ textAlign: "center", py: 2 }}>
-                  <Typography variant="h5" marginLeft={2}>
-                    {user}
+                  <Typography variant="h5" marginLeft={2} textTransform={'capitalize'}>
+                    {firstName}
                   </Typography>
                 </Box>
               </ListItem>
@@ -211,6 +224,8 @@ const UserNavBar = () => {
       </Box>
      
     </ThemeProvider>
+    {/* <UserDashboard/> */}
+    </>
   );
 };
 

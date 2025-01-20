@@ -23,7 +23,7 @@ import { FaBandage } from "react-icons/fa6";
 
 const NotificationData = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
   const [showAddNews, setShowAddNews] = useState(false);

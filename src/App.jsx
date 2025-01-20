@@ -88,10 +88,10 @@ const App = () => {
 
         <Route
           path="/user"
-          element={<> <UserNavBar /><UserDashboard/> </>}
+          element= {<UserNavBar />}
         >
           <Route path='profile' element={<Profile/>}/>
-          {/* <Route path='userdashboard' element={<UserDashboard/>}/> */}
+          <Route path='userdashboard' element={<UserDashboard/>}/>
           <Route path='MyMatches' element={<MyMatches/>}/>
           <Route path='myintrest' element={<MyInterest/>}/>
           <Route path='viewAll' element={<ViewAll/>}/>

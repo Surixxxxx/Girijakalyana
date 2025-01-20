@@ -23,6 +23,7 @@ const Navbar = () => {
   const [enterUsername, setEnterUsername] = useState('');  
   const [enterPassword, setEnterPassword] = useState('');
   const [isRegister, setIsRegister] = useState(false);
+  const [openForgotPassword, setOpenForgotPassword] = useState(false);
   const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [registerData, setRegisterData] = useState({
     firstName: '',
@@ -32,6 +33,7 @@ const Navbar = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    mobile:'',
   });
 
   const navigate = useNavigate();
@@ -43,6 +45,24 @@ const Navbar = () => {
   const handleClose = () => setOpen(false);
 
   const handleToggleForm = () => setIsRegister((prev) => !prev);
+
+  const handleOpenForgotPassword = () => setOpenForgotPassword(true);
+  const handleCloseForgotPassword = () => setOpenForgotPassword(false);
+
+  const handlecancelForgot=()=>{
+    setOpenForgotPassword(false)
+  }
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/forgot-password'
+      //  { email }
+      );
+      alert(response.data.message); // Handle response here (e.g., OTP sent)
+      handleCloseForgotPassword(); // Close the dialog after OTP is sent
+    } catch (error) {
+      alert('Error sending OTP: ' + error.response?.data?.message || error.message);
+    }
+  };
 
   const handleAdminLogin = async () => {
     try {
@@ -60,15 +80,7 @@ const Navbar = () => {
     } catch (error) {
       alert('Invalid admin credentials');
     }
-    setRegisterData({
-      firstName: '',
-      lastName: '',
-      gender: '',
-      dob: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    })
+    
   };
   
  
@@ -76,15 +88,21 @@ const handleLogin = async () => {
   // console.log(loginData)
   try {
     const response = await axios.post('http://localhost:5000/api/auth/login', loginData);
-
+    console.log('API Response:', response.data);
     const { token, user } = response.data;
     sessionStorage.setItem('token', token); // Store the token
+    sessionStorage.setItem('firstName', user.firstName);
+    sessionStorage.setItem('lastName', user.lastName);
+    sessionStorage.setItem('email', user.email);
+    sessionStorage.setItem('mobail', user.mobail);
+
     alert('Login successful!');
-    navigate('/user'); // Redirect user to the dashboard or home page
+    navigate('/user/userdashboard'); // Redirect user to the dashboard or home page
   } catch (error) {
     console.error(error.response?.data || error.message); // Log detailed error info
     alert('Login failed: ' + (error.response?.data?.message || 'Unknown error'));
   }
+ 
 };
   
   
@@ -204,7 +222,7 @@ const handleLogin = async () => {
           </Typography>
           {isRegister ? (
             <form style={{ width: '100%' }}>
-              <Box display="flex" gap={2} flexWrap="wrap" marginBottom={2}>
+              <Box display="flex" gap={2} flexWrap="wrap" marginBottom={1.5}>
                 <TextField
                   style={{ flex: 1 }}
                   label="First Name"
@@ -222,7 +240,7 @@ const handleLogin = async () => {
                   variant="outlined"
                 />
               </Box>
-              <Box display="flex" gap={2} flexWrap="wrap" marginBottom={2}>
+              <Box display="flex" gap={1} flexWrap="wrap" marginBottom={0}>
                 <FormControl style={{ flex: 1 }}>
                   <InputLabel>Gender</InputLabel>
                   <Select
@@ -243,6 +261,16 @@ const handleLogin = async () => {
                   type="date"
                   InputLabelProps={{ shrink: true }}
                 />
+                <TextField
+                 fullWidth
+               label="Mobile Number"
+                 name="mobile"
+               value={registerData.mobile}
+              onChange={handleChangeRegister}
+              variant="outlined"
+               margin="normal"
+                     />
+
               </Box>
               <TextField
                 fullWidth
@@ -310,7 +338,7 @@ const handleLogin = async () => {
                 variant="outlined"
                 margin="normal"
               />
-             <Typography sx={{color: '#1976d2',cursor:'pointer'}} mb={1.5} >Forgot Password?</Typography>
+             <Typography sx={{color: '#1976d2',cursor:'pointer'}} mb={1.5} onClick={handleOpenForgotPassword} >Forgot Password?</Typography>
               <Button
                 
                 variant="contained"
@@ -434,6 +462,48 @@ const handleLogin = async () => {
           cancel
         </Button>
         </Typography>
+      </Dialog>
+
+           {/* Forgot Password Dialog */}
+           <Dialog open={openForgotPassword} onClose={handleCloseForgotPassword}>
+        <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center',width:'400px',height:'200px' }}>
+          <Typography variant="h5" textAlign="center" fontWeight={700} color='#34495e' mb={2}>
+            Forgot Password
+          </Typography>
+          <TextField
+            fullWidth
+            label="Enter Email"
+            // value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            variant="outlined"
+            margin="normal"
+          />
+          <Typography display={'flex'} alignItems={'center'} gap={2}>
+          <Button
+            variant="contained"
+            onClick={handleForgotPassword}
+            sx={{
+              width: '150px',
+              background: '#34495e',
+              marginTop: '20px',
+            }}
+          >
+            Send OTP
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handlecancelForgot}
+            sx={{
+              width: '150px',
+              background: '#34495e',
+              marginTop: '20px',
+            }}
+          >
+            Cancel
+          </Button>
+          </Typography>
+         
+        </Box>
       </Dialog>
 
     </div>
