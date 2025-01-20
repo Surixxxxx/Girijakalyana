@@ -16,7 +16,7 @@ const EducationPop = () => {
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           Education & Occupation Information
         </Typography>
-        <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
+        <TableContainer  sx={{ boxShadow: 3 }}>
           <Table>
             <TableBody>
               {data.map((row, index) => (

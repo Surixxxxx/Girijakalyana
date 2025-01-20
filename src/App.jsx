@@ -29,12 +29,12 @@ import ReceiptsReportsData from './components/Admin/Reports/ReceiptsReportsData'
 import UserNavBar from './components/Userprofile/User/UserNavBar';
 import NotificationData from './components/Admin/notificationDta/NotificationData';
 import Servieces from './components/servieces/Servieces';
-import Profile from './components/Userprofile/Profile/Profile';
 import MyMatches from './components/Userprofile/myMatches/MyMatches';
 import MyInterest from './components/Userprofile/myIntrest/MyIntrest';
 import ViewAll from './components/Userprofile/viewAll/ViewAll';
 import Search from './components/Userprofile/search/Search';
 import UserDashboard from './components/Userprofile/userdDashboard/UserDashboard';
+import Profile from './components/Userprofile/profile/Profile';
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
@@ -88,10 +88,10 @@ const App = () => {
 
         <Route
           path="/user"
-          element={ <UserNavBar /> }
+          element={<> <UserNavBar /><UserDashboard/> </>}
         >
           <Route path='profile' element={<Profile/>}/>
-          <Route path='userdashboard' element={<UserDashboard/>}/>
+          {/* <Route path='userdashboard' element={<UserDashboard/>}/> */}
           <Route path='MyMatches' element={<MyMatches/>}/>
           <Route path='myintrest' element={<MyInterest/>}/>
           <Route path='viewAll' element={<ViewAll/>}/>

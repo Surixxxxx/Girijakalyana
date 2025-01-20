@@ -121,6 +121,7 @@ const UserDashboard = () => {
         backgroundColor: "#f4f6f8",
         minHeight: "100vh",
         padding: "24px",
+        paddingLeft:'260px'
       }}
     >
       <Box sx={{ textAlign: "center", mb: 4 }}>

@@ -9,6 +9,7 @@ import {
   Stack,
   Pagination,
   Divider,
+  Button,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import mathes from "../../../assets/mathes.jpeg";
@@ -90,7 +91,7 @@ const ViewAll = () => {
             style={{
               color: "#34495e",
               fontWeight: 700,
-              background: "rgba(0,0,0,0.1)",
+              // background: "rgba(0,0,0,0.1)",
               padding: "5px",
               borderRadius: 5,
             }}
@@ -154,91 +155,106 @@ const ViewAll = () => {
           ))}
         </Box>
 
+
         <Dialog
-          className="dialog-main-content"
-          maxWidth="md"
-          open={openDialog}
-          onClose={handleCloseDialog}
-          PaperProps={{
-            style: {
-              position: "fixed",
-              top: "45%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              padding: "0px",
-              overflow: "none",
-            },
-          }}
-        >
-          <Box className="popup-list">
-            <DialogContent maxWidth="md" style={{ padding: "0px" }}>
-              <Box className="user-name-age">
-                {/* <h3 className="user-name-details-heading">
-                  Akshatha N L , 27 Years (Last Seen: 3/27/23 12:31 PM){" "}
-                  {selectedCardDetails.id}
-                </h3> */}
-                <DialogActions />
-              </Box>
-              <Box className="user-other-details">
-                <Box>
-                  <img
-                    className="user-profile-pic"
-                    src={mathes}
-                    alt="user-dp"
-                  />
-                </Box>
-                <Box className="viewall-tabs-list">
-                  <Box>
-                    <Tabs
-                      className="viewall-tabs"
-                      value={details}
-                      onChange={handleChange}
-                      centered
-                    >
-                      <Tab className="viewall-tab-names-list-01" label="About" />
-                      <Tab className="viewall-tab-names-list-02" label="Family" />
-                      <Tab
-                        className="viewall-tab-names-list-03"
-                        label="Education"
-                      />
-                      <Tab
-                        className="viewall-tab-names-list-04"
-                        label="LifeStyle"
-                      />
-                      <Tab
-                        className="viewall-tab-names-list-05"
-                        label="Preference"
-                      />
-                    </Tabs>
-                    <Box className="viewall-tabs-content">
-                    {renderContent()}
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-              <Divider />
-              <Box>
-                <Box className="viewall-main-container-card1">
-                  <Box className="viewall-container-card1">
-                    <Box className="viewall-sub-container-card1">
-                      <h4 className="viewall-trusted-heading-2"> Verified </h4>
-                      <ul className="list-items">
-                        <li>Email</li>
-                        <li>Mobile</li>
-                        <li>Image</li>
-                      </ul>
-                    </Box>
-                  </Box>
-                  <Box>
-                    <button className="express-interest-button">
-                      Express Interest
-                    </button>
-                  </Box>
-                </Box>
-              </Box>
-            </DialogContent>
+      maxWidth="md"
+      open={openDialog}
+      onClose={handleCloseDialog}
+      PaperProps={{
+        style: {
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "5px",
+          width:'900px',
+          borderRadius: "8px",
+          backgroundColor: "#34495e", 
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+          overflowX:'auto',
+          overflowY:"hidden",
+          minHeight: "80vh",
+        },
+      }}
+    >
+      <DialogContent sx={{ padding: "0px", backgroundColor: "#34495e" }}>
+        <Box className="user-name-age" >
+          <DialogActions />
+        </Box>
+
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap',backgroundColor: "#34495e", }}>
+          {/* User Profile Picture */}
+          <Box sx={{ flex: 1, maxWidth: '250px',justifySelf:'center' }}>
+            <img
+              className="user-profile-pic"
+              src={mathes}
+              alt="user-dp"
+              style={{
+                width: "260px",
+                height: "200px",
+           
+                marginTop:'26%',
+                borderRadius: "8px",
+                // border: "2px solid #1976d2",
+              }}
+            />
           </Box>
-        </Dialog>
+
+          {/* Tabs Section */}
+          <Box sx={{ flex: 2, minWidth: '300px' }}>
+            <Tabs
+              value={details}
+              onChange={handleChange}
+              centered
+              textColor="primary"
+              indicatorColor="primary"
+              sx={{ mb: 2 }}
+            >
+              <Tab label="About" sx={{color:'#fff'}} />
+              <Tab label="Family" sx={{color:'#fff'}}/>
+              <Tab label="Education" sx={{color:'#fff'}}/>
+              <Tab label="LifeStyle" sx={{color:'#fff'}}/>
+              <Tab label="Preference" sx={{color:'#fff'}}/>
+            </Tabs>
+            <Box
+              sx={{
+                padding: 2,
+                backgroundColor: "#f9f9f9",
+                borderRadius: 2,
+                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                backdropFilter: 'none', 
+                minHeight: '200px', 
+              }}
+            >
+              {renderContent()}
+            </Box>
+          </Box>
+        </Box>
+
+        <Box sx={{ display: "flex",justifyContent:'start', alignItems: "center",gap:'60px',marginLeft:'15px' }}>
+          {/* Verified Section */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <h2 style={{ color: "#28a745", fontWeight: 600 }}>Verified</h2>
+           
+          </Box>
+          <Box>
+            <Button
+             variant="contained"
+             sx={{
+              backgroundColor:'#fff',
+              textTransform:'capitalize',
+              color:'#34495e',
+              fontWeight:700,
+              fontSize:'20px'
+             }}
+            >
+              Express Interest
+            </Button>
+          </Box>
+        </Box>
+      </DialogContent>
+    </Dialog>
+
 
         <Box
           className="viewall-pagination-div"

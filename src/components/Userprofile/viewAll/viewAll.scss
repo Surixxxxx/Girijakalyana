@@ -11,15 +11,15 @@
     flex-direction: column;
     
   }
-  .viewall-header-part {
-    padding: 5px 10px;
-    .viewall-user-name {
-      text-align: left;
-      font-size: 24px;
-      margin-bottom: 20px;
-      font-weight: 500;
-    }
-  }
+  // .viewall-header-part {
+  //   padding: 5px 10px;
+  //   .viewall-user-name {
+  //     text-align: left;
+  //     font-size: 24px;
+  //     // margin-bottom: 20px;
+  //     font-weight: 500;
+  //   }
+  // }
   
   .viewall-card-stack-div {
     display: grid;
@@ -85,12 +85,8 @@
             }
             .viewall-card-user-dp {
               width: 100%;
-              height: 280px;
-            //   transform: scale(1);
-            //   transition: 0.3s ease-in-out;
-            //   &:hover {
-            //     transform: scale(1.2);
-            //   }
+              height: 260px;
+           
             }
           }
         }

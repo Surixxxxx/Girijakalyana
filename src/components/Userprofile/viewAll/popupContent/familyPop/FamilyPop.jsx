@@ -7,8 +7,6 @@ const FamilyPop = () => {
     { label: "Siblings", value: "No Siblings" },
     { label: "Religion", value: "Hindu" },
     { label: "Caste", value: "Brahmin Smartha" },
-    { label: "Sub Caste", value: "Smartha badagnadu" },
-    { label: "Nakshatra", value: "Vishakha 1st Pada" },
     { label: "Rashi", value: "Tula" },
     { label: "Gotra", value: "Bharadwaja" },
   ];
@@ -19,7 +17,7 @@ const FamilyPop = () => {
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           Family Information
         </Typography>
-        <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
+        <TableContainer sx={{ boxShadow: 3 }}>
           <Table>
             <TableBody>
               {data.map((row, index) => (

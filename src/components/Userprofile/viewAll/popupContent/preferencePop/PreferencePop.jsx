@@ -17,7 +17,7 @@ const PreferencePop = () => {
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           Partner Preferences
         </Typography>
-        <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
+        <TableContainer  sx={{ boxShadow: 3 }}>
           <Table>
             <TableBody>
               {data.map((row, index) => (

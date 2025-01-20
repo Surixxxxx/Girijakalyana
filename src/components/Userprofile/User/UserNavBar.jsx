@@ -49,7 +49,7 @@ const UserNavBar = () => {
   };
 
   const handleDashboardClick = () => {
-    navigation("/user/userdashboard");
+    navigation("/user");
   };
 
   const handleProfileClick = () => {
@@ -165,7 +165,7 @@ const UserNavBar = () => {
                 </Box>
               </ListItem>
               {[ 
-                { text: "Dashboard", icon: <FaDashcube />, onClick: handleDashboardClick },
+                { text: "Dashboard", icon: <FaDashcube/>, onClick: handleDashboardClick },
                 { text: "Profile", icon: <FaUser />, onClick: handleProfileClick },
                 { text: "My Matches", icon: <FaUsers />, onClick: handleMatchesClick },
                 { text: "My Interest", icon: <FaHeart />, onClick: handleInterestClick },

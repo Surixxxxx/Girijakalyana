@@ -3,10 +3,8 @@ import { Box, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Pape
 
 const AboutPop = () => {
   const data = [
-    { label: "Date of Birth", value: "01 - Aug - 1998" },
-    { label: "Marital Status", value: "Unmarried" },
-    { label: "Height", value: "5' 2'' - 157cm" },
-    { label: "Language", value: "Kannada" },
+    {  label: "Marital Status", value: "Unmarried" },
+    {label: "Language", value: "Kannada" },
     { label: "Country", value: "India" },
     { label: "State", value: "Karnataka" },
     { label: "City", value: "Bangalore" },
@@ -20,7 +18,7 @@ const AboutPop = () => {
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           About Information
         </Typography>
-        <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
+        <TableContainer  sx={{ boxShadow: 3 }}>
           <Table>
             <TableBody>
               {data.map((row, index) => (

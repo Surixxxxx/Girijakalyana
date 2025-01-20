@@ -15,6 +15,7 @@ import {
 import { MdEmail, MdLock } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
+import axios from 'axios'
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -43,38 +44,64 @@ const Navbar = () => {
 
   const handleToggleForm = () => setIsRegister((prev) => !prev);
 
-  const handleAdminLogin = () => {
-    const Username = 'admin';
-    const Password = 'admin123';
-
-    if (enterUsername === Username && enterPassword === Password) {
-      sessionStorage.setItem('isAdmin', 'true'); // Store the admin status
-      navigate('/admin'); 
-      handleCloseAdminDialog();
-    } else {
-      alert('Invalid credentials');
+  const handleAdminLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/admin/login', { email: enterUsername, password: enterPassword });
+      const { token, user } = response.data;
+      if (user.isAdmin) {
+        sessionStorage.setItem('token', token);
+        alert('Admin Login successful!');
+        navigate('/admin');
+        handleCloseAdminDialog();
+      
+      } else {
+        alert('Access Denied');
+      }
+    } catch (error) {
+      alert('Invalid admin credentials');
     }
+    setRegisterData({
+      firstName: '',
+      lastName: '',
+      gender: '',
+      dob: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    })
   };
+  
+ 
+const handleLogin = async () => {
+  // console.log(loginData)
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/login', loginData);
 
-  const handleLogin = () => {
-    if (loginData.username === 'user' && loginData.password === 'user123') {
-      sessionStorage.setItem('isLogged', 'true');
-      navigate('/user');
+    const { token, user } = response.data;
+    sessionStorage.setItem('token', token); // Store the token
+    alert('Login successful!');
+    navigate('/user'); // Redirect user to the dashboard or home page
+  } catch (error) {
+    console.error(error.response?.data || error.message); // Log detailed error info
+    alert('Login failed: ' + (error.response?.data?.message || 'Unknown error'));
+  }
+};
+  
+  
+  const handleRegister = async () => {
+    // console.log(registerData);
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/register', registerData);
+      alert(response.data.message); // Show success message
       handleClose();
-    } else {
-      alert('Invalid username or password');
+      navigate('/'); 
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || 'Error registering user');
     }
   };
-
-  const handleRegister = () => {
-    if (registerData.password !== registerData.confirmPassword) {
-      alert('Passwords do not match!');
-    } else {
-      alert('Account created successfully!');
-      handleClose();
-    }
-  };
-
+  
+  
   const handleChangeLogin = (e) => {
     const { name, value } = e.target;
     setLoginData((prev) => ({ ...prev, [name]: value }));
@@ -128,7 +155,7 @@ const Navbar = () => {
                 backgroundColor: 'black',
                 marginRight: '25px',
                 width: '150px',
-                color: 'aqua',
+                color: '#fff',
                 fontWeight: 700,
                 height: '42px',
                 textTransform: 'capitalize',
@@ -136,7 +163,7 @@ const Navbar = () => {
             >
               Login
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               size="large"
               onClick={handleOpenAdminDialog}
@@ -144,14 +171,14 @@ const Navbar = () => {
                 backgroundColor: 'black',
                 marginRight: '25px',
                 width: '150px',
-                color: 'aqua',
+                color: '#fff',
                 fontWeight: 700,
                 height: '42px',
                 textTransform: 'capitalize',
               }}
             >
               Admin
-            </Button>
+            </Button> */}
           </Typography>
         </div>
       </div>
@@ -266,16 +293,16 @@ const Navbar = () => {
             <form style={{ width: '100%',height:'90%',padding:'40px 20px',display:'flex',alignItems:'center',flexDirection:'column' }}>
               <TextField
                sx={{width:'400px'}}
-                label="Username"
-                name="username"
-                value={loginData.username}
+                label="Enter Email"
+                name="email"
+                value={loginData.email}
                 onChange={handleChangeLogin}
                 variant="outlined"
                 margin="normal"
               />
               <TextField
               sx={{width:'400px',marginBottom:'20px'}}
-                label="Password"
+                label="Enter Password"
                 name="password"
                 value={loginData.password}
                 onChange={handleChangeLogin}
