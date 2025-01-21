@@ -35,9 +35,56 @@ const Navbar = () => {
     confirmPassword: '',
     mobile:'',
   });
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+const [confirmPassword, setConfirmPassword] = useState('');
+const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
+  const handleSendOtp = async () => {
+    console.log(email)
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+      alert(response.data.message);
+      setOtpSent(true); 
+    } catch (error) {
+      alert('Error sending OTP: ' + error.response?.data?.message || error.message);
+    }
+  };
+  const handleResetPassword = async () => {
+    console.log(email,newPassword,confirmPassword,otp);
+  
+   
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }  
+    try {
+
+      const response = await axios.post('http://localhost:5000/api/auth/reset-password', {
+        email,
+        newPassword,
+        confirmPassword,
+        otp
+      });
+  
+      if (response.data.message === 'Password reset successfully.') {
+        alert(response.data.message);
+        setOpenForgotPassword(false); 
+        navigate('/');
+      } else {
+      
+        setError(response.data.message || 'Error resetting password');
+      }
+    } catch (error) {
+  
+      setError(error.response?.data?.message || 'Error resetting password');
+    }
+  };
+  
   const handleOpenAdminDialog = () => setOpenAdminDialog(true);
   const handleCloseAdminDialog = () => setOpenAdminDialog(false);
 
@@ -49,20 +96,6 @@ const Navbar = () => {
   const handleOpenForgotPassword = () => setOpenForgotPassword(true);
   const handleCloseForgotPassword = () => setOpenForgotPassword(false);
 
-  const handlecancelForgot=()=>{
-    setOpenForgotPassword(false)
-  }
-  const handleForgotPassword = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/forgot-password'
-      //  { email }
-      );
-      alert(response.data.message); // Handle response here (e.g., OTP sent)
-      handleCloseForgotPassword(); // Close the dialog after OTP is sent
-    } catch (error) {
-      alert('Error sending OTP: ' + error.response?.data?.message || error.message);
-    }
-  };
 
   const handleAdminLogin = async () => {
     try {
@@ -433,7 +466,7 @@ const handleLogin = async () => {
           }}
         />
 
-        <Typography sx={{ color: 'black' }}>Forgot Password?</Typography>
+        <Typography sx={{ color: 'black' }} onClick={handleOpenForgotPassword}>Forgot Password?</Typography>
   <Typography style={{display:'flex',alignItems:'center',justifySelf:'flex-end',gap:'6px'}}>
         <Button
           variant="outlined"
@@ -464,47 +497,115 @@ const handleLogin = async () => {
         </Typography>
       </Dialog>
 
-           {/* Forgot Password Dialog */}
-           <Dialog open={openForgotPassword} onClose={handleCloseForgotPassword}>
-        <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center',width:'400px',height:'200px' }}>
-          <Typography variant="h5" textAlign="center" fontWeight={700} color='#34495e' mb={2}>
-            Forgot Password
+      <div>
+      <Dialog open={openForgotPassword} onClose={handleCloseForgotPassword}>
+  <Box
+    component="form"
+    onSubmit={(e) => {
+      e.preventDefault(); // Prevent default form submission
+      otpSent ? handleResetPassword() : handleSendOtp();
+    }}
+    sx={{
+      padding: '20px',
+      width:'400px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px',
+    }}
+  >
+    {!otpSent ? (
+      <>
+        <Typography variant="h6" textAlign="center">
+          Forgot Password
+        </Typography>
+        <TextField
+          fullWidth
+          label="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          variant="outlined"
+          margin="normal"
+          required
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            width: '150px',
+            alignSelf: 'center',
+            background: '#34495e',
+          }}
+        >
+          Send OTP
+        </Button>
+        
+      </>
+    ) : (
+      <>
+        <Typography variant="h6" textAlign="center">
+          Reset Password
+        </Typography>
+        <TextField
+          fullWidth
+          label="Enter OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          variant="outlined"
+          required
+        />
+        <TextField
+          fullWidth
+          label="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          variant="outlined"
+
+          type="password"
+          required
+        />
+        <TextField
+          fullWidth
+          label="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          variant="outlined"
+          type="password"
+          required
+        />
+        {error && (
+          <Typography color="error" textAlign="center">
+            {error}
           </Typography>
-          <TextField
-            fullWidth
-            label="Enter Email"
-            // value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            variant="outlined"
-            margin="normal"
-          />
-          <Typography display={'flex'} alignItems={'center'} gap={2}>
-          <Button
-            variant="contained"
-            onClick={handleForgotPassword}
-            sx={{
-              width: '150px',
-              background: '#34495e',
-              marginTop: '20px',
-            }}
-          >
-            Send OTP
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handlecancelForgot}
-            sx={{
-              width: '150px',
-              background: '#34495e',
-              marginTop: '20px',
-            }}
-          >
-            Cancel
-          </Button>
-          </Typography>
-         
-        </Box>
-      </Dialog>
+        )}
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            width: '190px',
+            padding:'10px',
+            alignSelf: 'center',
+            background: '#34495e',
+            marginTop: '10px',
+          }}
+        >
+          Reset Password
+        </Button>
+      </>
+    )}
+    <Button
+      // variant="text"
+
+      onClick={handleCloseForgotPassword}
+      sx={{ alignSelf: 'center', color: '#1976d2',"&:hover":{backgroundColor:'transparent'} }}
+    >
+      Cancel
+    </Button>
+  </Box>
+</Dialog>
+
+
+
+    </div>
 
     </div>
   );

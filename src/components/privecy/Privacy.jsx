@@ -12,7 +12,7 @@ const Privacy = () => {
      
       <header className="privacy-header">
         <h1>Privacy Policy</h1>
-        <p>Your privacy is our priority. Read how we protect your data.</p>
+        <p style={{color:'#fff'}}>Your privacy is our priority. Read how we protect your data.</p>
       </header>
 
       <section className="privacy-section">

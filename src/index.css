@@ -11,3 +11,6 @@ body{
     color: #fff;
    
 }
+button:hover{
+    background-color:transparent ;
+}

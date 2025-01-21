@@ -50,12 +50,25 @@ const MyInterest = () => {
           onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
-          sx={{ marginBottom: 2 }}
+          sx={{ marginBottom: 2 ,
+             }}
         >
-          <Tab label={`Accepted (5)`} />
-          <Tab label={`Requests (8)`} />
-          <Tab label={`Sent (3)`} />
-          <Tab label={`Pending (2)`} />
+          <Tab label={`Accepted (5)`} sx={{"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}} />
+          <Tab label={`Requests (8)`}  sx={{"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}} />
+          <Tab label={`Sent (3)`}  sx={{"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
+          <Tab label={`Pending (2)`}  sx={{"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
         </Tabs>
 
         {/* Content Section */}
@@ -63,8 +76,10 @@ const MyInterest = () => {
           sx={{
             padding: 2,
             backgroundColor: "#fff",
+           
             borderRadius: 2,
             boxShadow: 1,
+            color:'black'
           }}
         >
           {renderContents()}

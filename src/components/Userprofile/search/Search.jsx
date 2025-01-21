@@ -18,10 +18,13 @@ import {
   Paper,
   TablePagination,
   Button,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  Typography,
 } from "@mui/material";
-import { FaSearch, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import jsonData from "../../Userprofile/profile/eduction/jsondata/data.json";
-import "./search.scss"; // Custom styling file for your CSS
 
 const Search = () => {
   const datas = jsonData;
@@ -32,219 +35,226 @@ const Search = () => {
   const [toHeight, setToHeight] = useState("");
   const [occupation, setOccupation] = useState("");
   const [marrital, setMarrital] = useState("");
-  const [checkbox, setCheckbox] = useState(null);
   const [showMarrital, setShowMarrital] = useState(false);
-  const [page, setPage] = useState(0);
-  const rowsPerPage = 5;
 
-  const handleCheckboxNo = () => {
-    setShowMarrital(true);
-    setCheckbox("No");
-  };
-
-  const handleCheckboxYes = () => {
-    setShowMarrital(false);
-    setCheckbox("Yes");
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleRowsPerPageChange = (event) => {
-    // Handle change in rows per page if needed
+  const handleMaritalChange = (event) => {
+    const value = event.target.value;
+    setShowMarrital(value === "No");
   };
 
   return (
-    <>
-      <Box className="search-main-container">
-        <Box className="search-header-part">
-          <h3 className="search-user-name">Profile Based On Preference</h3>
-          <Box className="search-container" gap={1}>
-            <TextField
-              variant="outlined"
-              placeholder="Enter Reg No"
-              className="search-input"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment sx={{ marginRight: 2 }}>
-                    <FaSearch />
-                  </InputAdornment>
-                ),
-              }}
-            />
-             <Button variant="contained" sx={{height:'53px',textTransform:'capitalize',width:'100px',fontSize:'20px'}}>
+    <Box sx={{ padding: 3 }}>
+      {/* Header */}
+      <Box sx={{ textAlign: "center", mb: 4 }}>
+        <Typography variant="h4" fontWeight={700} sx={{color:'#34495e'}}>
+          Profile Based on Preference
+        </Typography>
+      </Box>
+
+      {/* Search Input */}
+      <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Enter Reg No"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FaSearch />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Button
+           
+            variant="contained"
+           
+            sx={{
+              height: "56px",
+              textTransform: "capitalize",
+              fontSize: "20px",
+              width:'130px',
+              backgroundColor:'#34495e',
+              "&:hover": {
+                backgroundColor: "#34495e", 
+               
+                },
+            }}
+          >
             Search
           </Button>
-          </Box>
-         
-        </Box>
+        </Grid>
+      </Grid>
 
-        {/* Marital Status Section */}
-        <Box className="radio-div">
-          <label className="radio-heading" style={{ color: "#34495e", fontWeight: 600 }}>
-            First Marriage *
-          </label>
-          <input
-            type="radio"
-            id="marriage-yes"
-            name="marriage"
+      {/* Marital Status */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
+          First Marriage *
+        </Typography>
+        <RadioGroup
+          row
+          value={showMarrital ? "No" : "Yes"}
+          onChange={handleMaritalChange}
+        >
+          <FormControlLabel
             value="Yes"
-            onClick={handleCheckboxYes}
+            control={<Radio />}
+            label="Yes"
           />
-          Yes
-          <input
-            type="radio"
-            id="marriage-no"
-            name="marriage"
+          <FormControlLabel
             value="No"
-            onClick={handleCheckboxNo}
+            control={<Radio />}
+            label="No"
           />
-          No
-          {showMarrital && (
-            <FormControl sx={{ minWidth: 220 }} size="small">
-              <InputLabel id="marrital-data-id">Marital Status</InputLabel>
-              <Select
-                labelId="marrital-data-label"
-                id="marrital-data-id"
-                value={marrital}
-                onChange={(e) => setMarrital(e.target.value)}
-                className="custom-select"
-              >
-                {datas[6].marritalStatus.map((item, index) => (
-                  <MenuItem key={index} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-        </Box>
-
-        {/* Form Fields */}
-        <Stack spacing={3} direction="row" className="form-fields-container" style={{ gap: 10 }}>
-          <Box style={{ gap: 10 }}>
-            <Grid item xs={12} md={6}>
-              <FormControl sx={{ width: 200, marginBottom: 2 }} size="small">
-                <InputLabel id="caste-field-id">Caste Preference</InputLabel>
-                <Select
-                  labelId="caste-field-label"
-                  id="caste-field-id"
-                  value={caste}
-                  onChange={(e) => setCaste(e.target.value)}
-                  className="custom-select"
-                >
-                  {datas[0].casteValues.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl sx={{ width: 200, marginBottom: 2 }} size="small">
-                <InputLabel id="age-from-id">Age Preference (From)</InputLabel>
-                <Select
-                  labelId="age-from-label"
-                  id="age-from-id"
-                  value={fromAge}
-                  onChange={(e) => setFromAge(e.target.value)}
-                  className="custom-select"
-                >
-                  {datas[9].minAge.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl sx={{ width: 200, marginBottom: 2 }} size="small">
-                <InputLabel id="height-from-id">Height Preference (From)</InputLabel>
-                <Select
-                  labelId="height-from-label"
-                  id="height-from-id"
-                  value={fromHeight}
-                  onChange={(e) => setFromHeight(e.target.value)}
-                  className="custom-select"
-                >
-                  {datas[5].heightValues.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Box>
-
-          <Box>
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={6}>
-                <FormControl sx={{ width: 200, marginBottom: 1 }} size="small">
-                  <InputLabel id="education-id">Education Preference</InputLabel>
-                  <Select
-                    labelId="education-label"
-                    id="education-id"
-                    value={occupation}
-                    onChange={(e) => setOccupation(e.target.value)}
-                    className="custom-select"
-                  >
-                    {datas[4].qualificationValues.map((item, index) => (
-                      <MenuItem key={index} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl sx={{ width: 200, marginBottom: 1 }} size="small">
-                  <InputLabel id="age-to-id">Age Preference (To)</InputLabel>
-                  <Select
-                    labelId="age-to-label"
-                    id="age-to-id"
-                    value={toAge}
-                    onChange={(e) => setToAge(e.target.value)}
-                    className="custom-select"
-                  >
-                    {datas[9].minAge.map((item, index) => (
-                      <MenuItem key={index} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl sx={{ width: 200 }} size="small">
-                  <InputLabel id="height-to-id">Height Preference (To)</InputLabel>
-                  <Select
-                    labelId="height-to-label"
-                    id="height-to-id"
-                    value={toHeight}
-                    onChange={(e) => setToHeight(e.target.value)}
-                    className="custom-select"
-                  >
-                    {datas[5].heightValues.map((item, index) => (
-                      <MenuItem key={index} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </Box>
-        </Stack>
-        <Box className="search-buttons-container" sx={{ mt: 3 }}>
-          <Button variant="contained" sx={{background:"#34495e",textTransform:'capitalize',fontSize:'18px'}}>Submit</Button>
-          <Button variant="outlined" color="secondary" sx={{textTransform:'capitalize',fontSize:'18px'}}>Reset</Button>
-        </Box>
+        </RadioGroup>
+        {showMarrital && (
+          <FormControl sx={{ minWidth: 200, mt: 2 }} size="small">
+            <InputLabel>Marital Status</InputLabel>
+            <Select
+              value={marrital}
+              onChange={(e) => setMarrital(e.target.value)}
+            >
+              {datas[6].marritalStatus.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       </Box>
-    </>
+
+      {/* Preferences */}
+      <Stack direction={{ xs: "column", md: "row" }} spacing={3} sx={{ mb: 3 }}>
+        {/* Left Column */}
+        <Box>
+          <FormControl sx={{ minWidth: 200, mb: 2,marginRight:'5px' }} size="small">
+            <InputLabel>Caste Preference</InputLabel>
+            <Select
+              value={caste}
+              onChange={(e) => setCaste(e.target.value)}
+            >
+              {datas[0].casteValues.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ minWidth: 200, mb: 2 }} size="small">
+            <InputLabel>Age Preference (From)</InputLabel>
+            <Select
+              value={fromAge}
+              onChange={(e) => setFromAge(e.target.value)}
+            >
+              {datas[9].minAge.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ minWidth: 200 }} size="small">
+            <InputLabel>Height Preference (From)</InputLabel>
+            <Select
+              value={fromHeight}
+              onChange={(e) => setFromHeight(e.target.value)}
+            >
+              {datas[5].heightValues.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        {/* Right Column */}
+        <Box>
+          <FormControl sx={{ minWidth: 200, mb: 2,marginRight:'5px' }} size="small">
+            <InputLabel>Education Preference</InputLabel>
+            <Select
+              value={occupation}
+              onChange={(e) => setOccupation(e.target.value)}
+            >
+              {datas[4].qualificationValues.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ minWidth: 200, mb: 2 }} size="small">
+            <InputLabel>Age Preference (To)</InputLabel>
+            <Select
+              value={toAge}
+              onChange={(e) => setToAge(e.target.value)}
+            >
+              {datas[9].minAge.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ minWidth: 200 }} size="small">
+            <InputLabel>Height Preference (To)</InputLabel>
+            <Select
+              value={toHeight}
+              onChange={(e) => setToHeight(e.target.value)}
+            >
+              {datas[5].heightValues.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Stack>
+
+      {/* Buttons */}
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Button
+          variant="contained"
+          
+          sx={{
+            textTransform: "capitalize",
+            fontSize: "18px",
+            mr: 2,
+            backgroundColor:'#34495e',
+            "&:hover": {
+              backgroundColor: "#34495e", 
+             
+              },
+          }}
+        >
+          Submit
+        </Button>
+        <Button
+          variant="outlined"
+          sx={{
+            textTransform: "capitalize",
+            fontSize: "18px",
+            backgroundColor:'#34495e',
+            color:'#fff',
+            "&:hover": {
+              backgroundColor: "#34495e", 
+             
+              },
+          }}
+        >
+          Reset
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

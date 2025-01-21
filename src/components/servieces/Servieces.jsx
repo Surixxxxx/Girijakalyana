@@ -60,7 +60,7 @@ const Servieces= () => {
           <div className="service-card" key={index}>
             <div className="icon-wrapper">{service.icon}</div>
             <h3>{service.title}</h3>
-            <p>{service.description}</p>
+            <p style={{color:'#fff'}}>{service.description}</p>
             {index < services.length - 1 && (
               <FaArrowAltCircleRight className="arrow-icon"/>
               // <img src={} alt="Arrow Down" className="arrow-icon" />

@@ -58,7 +58,7 @@ const Sent = () => {
               <Typography color="text.secondary">{card.address.city}</Typography>
               <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     {card.id}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -66,7 +66,7 @@ const Sent = () => {
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     5.4
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -74,7 +74,7 @@ const Sent = () => {
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     SGM333
                   </Typography>
                   <Typography variant="caption" color="text.secondary">

@@ -193,10 +193,10 @@ const About = ({ render }) => {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} sx={{ fontWeight: 600 }}>
+            <Button onClick={handleCloseDialog} sx={{ fontWeight: 600 ,"&:hover":{backgroundColor:'transparent'} }}>
               Cancel
             </Button>
-            <Button type="submit"  color="primary" sx={{ fontWeight: 600 }}>
+            <Button type="submit"  color="primary" sx={{ fontWeight: 600,"&:hover":{backgroundColor:'transparent'} }}>
               Save Changes
             </Button>
           </DialogActions>

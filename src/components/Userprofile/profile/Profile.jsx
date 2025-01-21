@@ -54,12 +54,12 @@ const Profile = () => {
         {/* <Sidebar /> */}
         {/* <Box flex={1} p={3}> */}
           {/* Header */}
-          <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
-            <Typography variant="h5" fontWeight={700} gutterBottom color="#34495e">
+         
+            <Typography variant="h5" fontWeight={700} mt={1} gutterBottom color="#34495e">
               My Profile
             </Typography>
             {/* <Divider /> */}
-           </Paper>
+          
 
           {/* Snackbar for success messages */}
           <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
@@ -85,16 +85,41 @@ const Profile = () => {
               indicatorColor="primary"
               sx={{ mb: 2 }}
             >
-              <Tab label="About" sx={{fontWeight:700}}/>
-              <Tab label="Family & Religious" sx={{fontWeight:700}} />
-              <Tab label="Education" sx={{fontWeight:700}}/>
-              <Tab label="Photos" sx={{fontWeight:700}}/>
-              <Tab label="LifeStyle" sx={{fontWeight:700}}/>
-              <Tab label="Parents Preference" sx={{fontWeight:700}}/>
-              <Tab label="Others" sx={{fontWeight:700}}/>
-              <Tab label="Privacy Setting" sx={{fontWeight:700}}/>
+
+              <Tab label="About" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}} />
+              <Tab label="Family & Religious" sx={{fontWeight:700,"&:hover": {
+                 backgroundColor: "transparent", 
+            
+          },}} />
+              <Tab label="Education" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
+              <Tab label="Photos" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
+              <Tab label="LifeStyle" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
+              <Tab label="Parents Preference" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
+              <Tab label="Others" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
+              <Tab label="Privacy Setting" sx={{fontWeight:700,"&:hover": {
+            backgroundColor: "transparent", 
+            
+          },}}/>
             </Tabs>
-            <Box mt={2}>{renderContent()}</Box>
+            <Box mt={2} >{renderContent()}</Box>
           </Paper>
         </Box>
     //   </Box>

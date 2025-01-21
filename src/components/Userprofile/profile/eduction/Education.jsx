@@ -70,10 +70,10 @@ const Education = ({ render }) => {
           </Select>
           <Divider sx={{ my: 2 }} />
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-            <Button onClick={handleCloseDialog} variant="outlined">
+            <Button onClick={handleCloseDialog} variant="outlined" sx={{"&:hover":{backgroundColor:'transparent'}}}>
               Close
             </Button>
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" sx={{"&:hover":{backgroundColor:'#34495e'},backgroundColor:'#34495e',textTransform:'capitalize'}}>
               Save Changes
             </Button>
           </Box>
@@ -189,6 +189,7 @@ const Education = ({ render }) => {
         value={degree}
         setValue={setDegree}
         options={Data[4].qualificationValues}
+       
       />
       <DialogForm
         title="Occupation"

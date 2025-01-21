@@ -187,17 +187,21 @@ const UserNavBar = () => {
                 { text: "Logout", icon: <FaSignOutAlt />, onClick: handleLogout },
               ].map((item, index) => (
                 <ListItem button key={index} onClick={item.onClick}>
-                  <Button
-                    variant="text"
-                    startIcon={item.icon}
-                    sx={{
-                      color: "#fff",
-                      fontSize: "1.2rem",
-                      textTransform: "capitalize",
-                      marginLeft: "10px",
-                      gap: "10px",
-                    }}
-                  >
+                <Button
+                variant="text"
+               startIcon={item.icon}
+                sx={{
+                  color: "#fff",
+              fontSize: "1.2rem",
+               textTransform: "capitalize",
+                marginLeft: "10px",
+                  gap: "10px",
+                 "&:hover": {
+                  backgroundColor: "transparent", 
+                 color: "#fff", 
+                  },
+                 }}
+                   >
                     {item.text}
                   </Button>
                 </ListItem>

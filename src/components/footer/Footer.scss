@@ -49,7 +49,7 @@ h2{
 .text{
   display: flex;
   align-items: flex-start;
-
+  color:#fff;
 }
 
 .footer .text {
@@ -59,7 +59,7 @@ h2{
 
 .footer .list {
   list-style: none;
- 
+
   padding: 0;
 
 }
@@ -78,6 +78,7 @@ h2{
   padding: 8px;
   margin-top: 8px;
   border-radius: 4px;
+  margin-right: 60px;
   border: none;
   width: 80%;
   height: 40px;
@@ -96,8 +97,8 @@ h2{
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-self: center;
-  margin-right: 19px;
+justify-content: center; 
+  margin-right: 40%;
 }
 
 .footer .button:hover {

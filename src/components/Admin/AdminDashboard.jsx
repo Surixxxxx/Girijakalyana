@@ -371,14 +371,23 @@ const handleProfileDialogClose = () => {
           fullWidth
           margin="normal"
         />
-        <Button
-          variant="contained"
-          component="label"
-          style={{ marginTop: "10px",textTransform:'capitalize',background:'#34495e' }}
-        >
-          Upload Profile Picture
-          <input type="file" hidden onChange={handleImageUpload} />
-        </Button>
+     <Button
+  variant="contained"
+  component="label"
+  style={{
+    marginTop: "10px",
+    textTransform: "capitalize",
+    background: "#34495e",
+  }}
+>
+  Upload Profile Picture
+  <input
+    type="file"
+    hidden
+    onChange={handleImageUpload}
+  />
+</Button>
+
         {userProfile.profilePicture && (
           <img
             src={userProfile.profilePicture}
@@ -388,10 +397,20 @@ const handleProfileDialogClose = () => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleProfileDialogClose}sx={{color:'#34495e'}}>
+        <Button onClick={handleProfileDialogClose}sx={{color:'#34495e',
+            "&:hover": {
+              backgroundColor: "transparent", 
+            
+              },
+        }}>
           Cancel
         </Button>
-        <Button onClick={handleProfileDialogClose} color="success">
+        <Button onClick={handleProfileDialogClose} color="success"
+        sx={{"&:hover": {
+                  backgroundColor: "transparent", 
+                
+                  },}}
+        >
           Save
         </Button>
       </DialogActions>

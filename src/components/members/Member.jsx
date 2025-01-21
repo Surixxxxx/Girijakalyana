@@ -70,7 +70,7 @@ const Members=() =>{
                   <Typography variant="h6" sx={{ fontWeight: 'bold',fontFamily: "Outfit sans-serif" }}>
                     {member.name}
                   </Typography>
-                  <Typography variant="body2" sx={{fontFamily: "Outfit sans-serif"}}>
+                  <Typography variant="body2" sx={{fontFamily: "Outfit sans-serif",color:'black'}}>
                     {member.date}
                   </Typography>
                 </Box>

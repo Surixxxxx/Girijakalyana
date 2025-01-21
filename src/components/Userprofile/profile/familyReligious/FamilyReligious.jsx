@@ -187,11 +187,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenFatherName, false)}
                 color="secondary"
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
               >
                 Cancel
               </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize" }}>
+              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
                 Save
               </Button>
             </DialogActions>
@@ -223,11 +223,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenMotherName, false)}
                 color="secondary"
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
               >
                 Cancel
               </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize" }}>
+              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
                 Save
               </Button>
             </DialogActions>
@@ -259,11 +259,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenSubCaste, false)}
                 color="secondary"
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
               >
                 Cancel
               </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize" }}>
+              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
                 Save
               </Button>
             </DialogActions>
@@ -295,11 +295,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenNakshatra, false)}
                 color="secondary"
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
               >
                 Cancel
               </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize" }}>
+              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
                 Save
               </Button>
             </DialogActions>
@@ -331,11 +331,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenRashi, false)}
                 color="secondary"
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
               >
                 Cancel
               </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize" }}>
+              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
                 Save
               </Button>
             </DialogActions>
@@ -367,11 +367,11 @@ const FamilyReligious = ({ render }) => {
               <Button
                 onClick={() => handleDialogToggle(setOpenGotra, false)}
                 color="secondary"
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
               >
                 Cancel
               </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize" }}>
+              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
                 Save
               </Button>
             </DialogActions>

@@ -206,8 +206,8 @@ const ViewAll = () => {
               value={details}
               onChange={handleChange}
               centered
-              textColor="primary"
-              indicatorColor="primary"
+              // textColor="primary"
+              // indicatorColor="primary"
               sx={{ mb: 2 }}
             >
               <Tab label="About" sx={{color:'#fff'}} />

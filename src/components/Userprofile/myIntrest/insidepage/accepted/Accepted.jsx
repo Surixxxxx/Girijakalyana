@@ -79,7 +79,7 @@ const Accepted = () => {
                 }}
               >
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     {card.id}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -87,7 +87,7 @@ const Accepted = () => {
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     5.4
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -95,10 +95,10 @@ const Accepted = () => {
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     SGM333
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.secondary" >
                     Reg No
                   </Typography>
                 </Box>
