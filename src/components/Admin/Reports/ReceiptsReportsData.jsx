@@ -109,7 +109,7 @@ const ReceiptsReportsData = () => {
       
 
         
-          <Button variant="contained" color="secondary" sx={{padding:'14px 22px',backgroundColor:'#34495e',textTransform:'capitalize'}}>
+          <Button variant="contained" color="primary" sx={{padding:'14px 22px',backgroundColor:'#34495e',textTransform:'capitalize'}}>
             Submit
           </Button>
           </Box>

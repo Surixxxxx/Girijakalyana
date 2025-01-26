@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Dialog,
   DialogContent,
   DialogActions,
   Stack,
-  Select,
-  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -14,371 +13,238 @@ import {
   TableRow,
   Typography,
   Button,
+  Select,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 import { FaEdit } from "react-icons/fa";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouteLoaderData } from "react-router-dom";
 
-const FamilyReligious = ({ render }) => {
-  const [fatherName, setFatherName] = useState("Rama");
-  const [motherName, setMotherName] = useState("Sita");
-  const [selectParentType, setSelectParentType] = useState("Father");
-  const [subCaste, setSubCaste] = useState("Brahmin");
-  const [nakshatra, setNakshatra] = useState("Anuradha");
-  const [rashi, setRashi] = useState("Mesha");
-  const [gotra, setGotra] = useState("Mallig");
+const FamilyReligious = ({email}) => {
+  // const [userId, setUserId] = useState(null); 
+ 
+  const [fields, setFields] = useState({
+    fatherName: "rajesh",
+    motherName: "",
+    // sibblings:"",
+    caste: "",
+    nakshatra: "",
+    rashi: "",
+    gotra: "",
+  });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedField, setSelectedField] = useState("fatherName");
+  const [tempValue, setTempValue] = useState(fields.fatherName);
+  const [isNewRecord, setIsNewRecord] = useState(true);
+  const [isEditing, setIsEditing] = useState(false); 
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = sessionStorage.getItem("userData");
+        const { _id: userId } = JSON.parse(userData);
 
-  // Dialog states
-  const [openFatherName, setOpenFatherName] = useState(false);
-  const [openMotherName, setOpenMotherName] = useState(false);
-  const [openSubCaste, setOpenSubCaste] = useState(false);
-  const [openNakshatra, setOpenNakshatra] = useState(false);
-  const [openRashi, setOpenRashi] = useState(false);
-  const [openGotra, setOpenGotra] = useState(false);
+        const response = await axios.get(`http://localhost:5000/api/familyReligious/${userId}`);
+        if (response.data) {
+          setFields(response.data);
+          setIsNewRecord(false);
+        }
+      } catch (error) {
+        console.warn("No existing record found:", error);
+        setIsNewRecord(true);
+      }
+    };
 
-  const handleDialogToggle = (dialogSetter, state) => {
-    dialogSetter(state);
+    fetchData();
+  }, []);
+
+      const clearData =()=>{
+        setFields({
+          fatherName: "rajesh",
+          motherName: "",
+          // sibblings:"",
+          caste: "",
+          nakshatra: "",
+          rashi: "",
+          gotra: "",
+        }) 
+      }   
+
+
+  const handleFieldChange = (e) => {
+    const { name, value } = e.target;
+    setFields((prevFields) => ({
+      ...prevFields,
+      [name]: value,
+    }));
   };
 
-  const handleDialogSubmit = (e, setter, valueSetter) => {
-    e.preventDefault();
-    const newValue = e.target.elements[valueSetter].value;
-    setter(newValue);
-    render(true);
+  const handleSave = async () => {
+    const updatedFields = { ...fields, [selectedField]: tempValue };
+
+    try {
+      const userData = sessionStorage.getItem("userData");
+      const { _id: userId } = JSON.parse(userData);
+
+      if (isNewRecord) {
+        // Add new record
+        const response = await axios.post("http://localhost:5000/api/addFamilyReligious", {
+          userId,
+          ...updatedFields,
+        });
+        toast.success(response.data.message || "Data added successfully!");
+      } else {
+        // Update existing record
+        const response = await axios.put("http://localhost:5000/api/updateFamilyReligious", {
+          userId,
+          ...updatedFields,
+        });
+        toast.success(response.data.message || "Data updated successfully!");
+      }
+
+      setFields(updatedFields);
+      setIsNewRecord(false);
+    } catch (error) {
+      toast.error("Failed to save data.");
+    }
+
+    setOpenDialog(false);
   };
+
+  
 
   const tableHeaderStyle = {
     fontWeight: "bold",
     backgroundColor: "#f4f6f8",
     color: "#34495e",
-    fontSize: '18px',
+    fontSize: "18px",
   };
 
   return (
     <Box
-      padding={3}
-      sx={{
-        maxWidth: "800px",
-        boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-        borderRadius: "8px",
-        backgroundColor: "#fff",
-      }}
-    >
-      {/* Family and Religious Background Content */}
-      <Stack spacing={4}>
-        {/* Family Table */}
-        <Box>
-          <Typography variant="h6" color="#34495e" gutterBottom>
-            Family
-          </Typography>
-          <TableContainer>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Father</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>
-                    {fatherName}
-                    <FaEdit
-                      style={{ marginLeft: "10px", cursor: "pointer", color: "#3498db", fontSize: '18px' }}
-                      onClick={() => handleDialogToggle(setOpenFatherName, true)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Mother</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>
-                    {motherName}
-                    <FaEdit
-                      style={{ marginLeft: "10px", cursor: "pointer", color: "#3498db", fontSize: '18px' }}
-                      onClick={() => handleDialogToggle(setOpenMotherName, true)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Sibling</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>No Sibling</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-
-        {/* Religious Background Table */}
-        <Box>
-          <Typography variant="h6" color="#34495e" gutterBottom>
-            Religious Background
-          </Typography>
-          <TableContainer>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Religion</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>Hindu</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Caste</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>Brahmin</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Sub Caste</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>
-                    {subCaste}
-                    <FaEdit
-                      style={{ marginLeft: "10px", cursor: "pointer", color: "#3498db", fontSize: '18px' }}
-                      onClick={() => handleDialogToggle(setOpenSubCaste, true)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Nakshatra</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>
-                    {nakshatra}
-                    <FaEdit
-                      style={{ marginLeft: "10px", cursor: "pointer", color: "#3498db", fontSize: '18px' }}
-                      onClick={() => handleDialogToggle(setOpenNakshatra, true)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Rashi</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>
-                    {rashi}
-                    <FaEdit
-                      style={{ marginLeft: "10px", cursor: "pointer", color: "#3498db", fontSize: '18px' }}
-                      onClick={() => handleDialogToggle(setOpenRashi, true)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={tableHeaderStyle}>Gotra</TableCell>
-                  <TableCell sx={{ fontSize: '18px' }}>
-                    {gotra}
-                    <FaEdit
-                      style={{ marginLeft: "10px", cursor: "pointer", color: "#3498db", fontSize: '18px' }}
-                      onClick={() => handleDialogToggle(setOpenGotra, true)}
-                    />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Stack>
-
-      {/* Dialog for Father Name */}
-      <Dialog
-        maxWidth="sm"
-        open={openFatherName}
-        onClose={() => handleDialogToggle(setOpenFatherName, false)}
-      >
-        <DialogContent>
-          <Typography variant="h6" color="#34495e" marginBottom={2}>
-            Edit Father Name
-          </Typography>
-          <form onSubmit={(e) => handleDialogSubmit(e, setFatherName, "fatherName")}>
-            <Box marginBottom={2}>
-              <input
-                type="text"
-                id="fatherName"
-                value={fatherName}
-                onChange={(e) => setFatherName(e.target.value)}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </Box>
-            <DialogActions>
-              <Button
-                onClick={() => handleDialogToggle(setOpenFatherName, false)}
-                color="secondary"
-                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
-                Save
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog for Mother Name */}
-      <Dialog
-        maxWidth="sm"
-        open={openMotherName}
-        onClose={() => handleDialogToggle(setOpenMotherName, false)}
-      >
-        <DialogContent>
-          <Typography variant="h6" color="#34495e" marginBottom={2}>
-            Edit Mother Name
-          </Typography>
-          <form onSubmit={(e) => handleDialogSubmit(e, setMotherName, "motherName")}>
-            <Box marginBottom={2}>
-              <input
-                type="text"
-                id="motherName"
-                value={motherName}
-                onChange={(e) => setMotherName(e.target.value)}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </Box>
-            <DialogActions>
-              <Button
-                onClick={() => handleDialogToggle(setOpenMotherName, false)}
-                color="secondary"
-                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
-                Save
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog for Sub Caste */}
-      <Dialog
-        maxWidth="sm"
-        open={openSubCaste}
-        onClose={() => handleDialogToggle(setOpenSubCaste, false)}
-      >
-        <DialogContent>
-          <Typography variant="h6" color="#34495e" marginBottom={2}>
-            Edit Sub Caste
-          </Typography>
-          <form onSubmit={(e) => handleDialogSubmit(e, setSubCaste, "subCaste")}>
-            <Box marginBottom={2}>
-              <input
-                type="text"
-                id="subCaste"
-                value={subCaste}
-                onChange={(e) => setSubCaste(e.target.value)}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </Box>
-            <DialogActions>
-              <Button
-                onClick={() => handleDialogToggle(setOpenSubCaste, false)}
-                color="secondary"
-                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
-                Save
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog for Nakshatra */}
-      <Dialog
-        maxWidth="sm"
-        open={openNakshatra}
-        onClose={() => handleDialogToggle(setOpenNakshatra, false)}
-      >
-        <DialogContent>
-          <Typography variant="h6" color="#34495e" marginBottom={2}>
-            Edit Nakshatra
-          </Typography>
-          <form onSubmit={(e) => handleDialogSubmit(e, setNakshatra, "nakshatra")}>
-            <Box marginBottom={2}>
-              <input
-                type="text"
-                id="nakshatra"
-                value={nakshatra}
-                onChange={(e) => setNakshatra(e.target.value)}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </Box>
-            <DialogActions>
-              <Button
-                onClick={() => handleDialogToggle(setOpenNakshatra, false)}
-                color="secondary"
-                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
-                Save
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog for Rashi */}
-      <Dialog
-        maxWidth="sm"
-        open={openRashi}
-        onClose={() => handleDialogToggle(setOpenRashi, false)}
-      >
-        <DialogContent>
-          <Typography variant="h6" color="#34495e" marginBottom={2}>
-            Edit Rashi
-          </Typography>
-          <form onSubmit={(e) => handleDialogSubmit(e, setRashi, "rashi")}>
-            <Box marginBottom={2}>
-              <input
-                type="text"
-                id="rashi"
-                value={rashi}
-                onChange={(e) => setRashi(e.target.value)}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </Box>
-            <DialogActions>
-              <Button
-                onClick={() => handleDialogToggle(setOpenRashi, false)}
-                color="secondary"
-                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
-                Save
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog for Gotra */}
-      <Dialog
-        maxWidth="sm"
-        open={openGotra}
-        onClose={() => handleDialogToggle(setOpenGotra, false)}
-      >
-        <DialogContent>
-          <Typography variant="h6" color="#34495e" marginBottom={2}>
-            Edit Gotra
-          </Typography>
-          <form onSubmit={(e) => handleDialogSubmit(e, setGotra, "gotra")}>
-            <Box marginBottom={2}>
-              <input
-                type="text"
-                id="gotra"
-                value={gotra}
-                onChange={(e) => setGotra(e.target.value)}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </Box>
-            <DialogActions>
-              <Button
-                onClick={() => handleDialogToggle(setOpenGotra, false)}
-                color="secondary"
-                sx={{ textTransform: "capitalize","&:hover":{backgroundColor:'transparent'} }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" sx={{ backgroundColor: "#34495e", color: "#fff", textTransform: "capitalize","&:hover":{backgroundColor:'#34495e'} }}>
-                Save
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
+    padding={1}
+    sx={{
+      // Width: "80vw",
+      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+      borderRadius: "8px",
+      backgroundColor: "#fff",
+        width:'90%'
+    }}
+  >
+    <Box sx={{display:'flex',justifySelf:'end',mr:9}}>
+ 
+        <Button variant={isEditing ? 'outlined' : 'contained'}   style={{ cursor: "pointer", color: "#fff", 
+        fontSize: "16px",background:`${isEditing?'red':'#34495e'}`
+        ,textTransform:'capitalize',border:'none' }}
+        onClick={() => setIsEditing(!isEditing)}>
+         {isEditing ? 'Cancel': 'Edit'}
+          </Button>
+   
     </Box>
+
+    <Stack spacing={4} >
+      <Box sx={{ display:'flex',gap:'10px',justifyContent:'space-evenly'
+      }}>
+    
+      <Box>
+        <Typography variant="h5" fontWeight={700} color="#34495e" gutterBottom>
+          Religious Background
+        </Typography>
+        <Stack spacing={2}>
+          <TextField
+            label="Caste"
+            name="caste"
+            value={fields.caste}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          />
+          <TextField
+            label="Nakshatra"
+            name="nakshatra"
+            value={fields.nakshatra}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          />
+          <TextField
+            label="Rashi"
+            name="rashi"
+            value={fields.rashi}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          />
+          <TextField
+            label="Gotra"
+            name="gotra"
+            value={fields.gotra}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          />
+        </Stack>
+      </Box>
+      <Box>
+        <Typography variant="h5" fontWeight={700} color="#34495e" gutterBottom>
+          Family Information
+        </Typography>
+        <Stack spacing={2}>
+          <TextField
+            label="Father Name"
+            name="fatherName"
+            value={fields.fatherName}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          />
+          <TextField
+            label="Mother Name"
+            name="motherName"
+            value={fields.motherName}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          />
+           {/* <TextField
+            label="Sibblings"
+            name="Sibblings"
+            value={fields.sibblings}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          /> */}
+           {/* <TextField
+            label="Mother Name"
+            name="motherName"
+            value={fields.motherName}
+            onChange={handleFieldChange}
+            disabled={!isEditing}
+            sx={{width:'500px'}}
+          /> */}
+        </Stack>
+      </Box>
+
+      </Box>
+    </Stack>
+
+    {isEditing && (
+      <Box mt={3} display="flex" gap={2} justifyContent={'flex-end'} mr={9}>
+        <Button
+          variant="contained"
+        sx={{background:'#34495e',textTransform:'capitalize'}}
+          onClick={clearData}
+        >
+          clear
+        </Button>
+        <Button variant="contained"  sx={{background:'#34495e',textTransform:'capitalize'}} onClick={handleSave}>
+          Save
+        </Button>
+      </Box>
+    )}
+  </Box>
   );
 };
 

@@ -16,6 +16,7 @@ import { MdEmail, MdLock } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios'
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -48,10 +49,10 @@ const [error, setError] = useState('');
     console.log(email)
     try {
       const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
-      alert(response.data.message);
+      toast.success(response.data.message);
       setOtpSent(true); 
     } catch (error) {
-      alert('Error sending OTP: ' + error.response?.data?.message || error.message);
+      toast.error('Error sending OTP: ' + error.response?.data?.message || error.message);
     }
   };
   const handleResetPassword = async () => {
@@ -59,7 +60,7 @@ const [error, setError] = useState('');
   
    
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match!');
+      toast.error('Passwords do not match!');
       return;
     }  
     try {
@@ -72,16 +73,16 @@ const [error, setError] = useState('');
       });
   
       if (response.data.message === 'Password reset successfully.') {
-        alert(response.data.message);
+        toast.success(response.data.message);
         setOpenForgotPassword(false); 
         navigate('/');
       } else {
       
-        setError(response.data.message || 'Error resetting password');
+        toast.error(response.data.message || 'Error resetting password');
       }
     } catch (error) {
   
-      setError(error.response?.data?.message || 'Error resetting password');
+      toast.error(error.response?.data?.message || 'Error resetting password');
     }
   };
   
@@ -103,7 +104,7 @@ const [error, setError] = useState('');
       const { token, user } = response.data;
       if (user.isAdmin) {
         sessionStorage.setItem('token', token);
-        alert('Admin Login successful!');
+        toast.success('Admin Login successful!');
         navigate('/admin');
         handleCloseAdminDialog();
       
@@ -111,7 +112,7 @@ const [error, setError] = useState('');
         alert('Access Denied');
       }
     } catch (error) {
-      alert('Invalid admin credentials');
+      toast.error('Invalid admin credentials');
     }
     
   };
@@ -124,16 +125,18 @@ const handleLogin = async () => {
     console.log('API Response:', response.data);
     const { token, user } = response.data;
     sessionStorage.setItem('token', token); // Store the token
+    sessionStorage.setItem('userId', user._id);
     sessionStorage.setItem('firstName', user.firstName);
     sessionStorage.setItem('lastName', user.lastName);
     sessionStorage.setItem('email', user.email);
-    sessionStorage.setItem('mobail', user.mobail);
+    sessionStorage.setItem('mobile', user.mobile);
+    sessionStorage.setItem('userData', JSON.stringify(user));
 
-    alert('Login successful!');
+    toast.success('Login successful!');
     navigate('/user/userdashboard'); // Redirect user to the dashboard or home page
   } catch (error) {
     console.error(error.response?.data || error.message); // Log detailed error info
-    alert('Login failed: ' + (error.response?.data?.message || 'Unknown error'));
+    toast.error('Login failed: ' + (error.response?.data?.message || 'Unknown error'));
   }
  
 };
@@ -143,12 +146,23 @@ const handleLogin = async () => {
     // console.log(registerData);
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', registerData);
-      alert(response.data.message); // Show success message
+      const { userId, email } = response.data.user;
+
+      // Check if the userId is valid before storing it
+      if (userId) {
+        sessionStorage.setItem('userId', userId); // Store the userId in sessionStorage
+        sessionStorage.setItem('email', email);
+        toast.success('Registration successful!');
+      } else {
+        toast.error('User ID not received from backend.');
+      }
+
       handleClose();
       navigate('/'); 
+      console.log(response.data.message)
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || 'Error registering user');
+      toast.error(error.response?.data?.message || 'Error registering user');
     }
   };
   

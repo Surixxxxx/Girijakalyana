@@ -1,31 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Divider,
   MenuItem,
-  Select,
-  Stack,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
+  TextField,
   Button,
-  IconButton,
+ 
 } from "@mui/material";
 import { FaEdit, FaTimes } from "react-icons/fa";
-import jsondata from "../eduction/jsondata/data.json";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const LifeStyle = ({ render }) => {
-  const values = jsondata;
-  const [openDialog, setOpenDialog] = useState(false);
   const [drink, setDrink] = useState("No");
   const [smoke, setSmoke] = useState("No");
   const [diet, setDiet] = useState("Veg");
@@ -33,164 +19,214 @@ const LifeStyle = ({ render }) => {
   const [bloodgroup, setBloodgroup] = useState("A+");
   const [bodyType, setBodyType] = useState("Average");
   const [skinType, setSkinType] = useState("Fair");
+  // Fetch user data from sessionStorage and load their lifestyle
+  useEffect(() => {
+    const fetchData = async () => {
+      const userData = sessionStorage.getItem("userData");
+      if (!userData) {
+        console.error("No user data found in sessionStorage");
+        return;
+      }
 
-  const handleOpenDialog = () => setOpenDialog(true);
-  const handleCloseDialog = () => setOpenDialog(false);
+      const { _id: userId } = JSON.parse(userData);
 
-  const handleAllDataSubmit = (e) => {
-    e.preventDefault();
-    setOpenDialog(false);
-    render(true);
+      if (!userId) {
+        console.error("Invalid userId format:", userId);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:5000/api/lifeStyle/${userId}`);
+        const lifestyle = response.data.lifestyle;
+
+        if (lifestyle) {
+          setDrink(lifestyle.drink || "No");
+          setSmoke(lifestyle.smoke || "No");
+          setDiet(lifestyle.diet || "Veg");
+          setSunsign(lifestyle.sunsign || "Aries");
+          setBloodgroup(lifestyle.bloodgroup || "A+");
+          setBodyType(lifestyle.bodyType || "Average");
+          setSkinType(lifestyle.skinType || "Fair");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  
+
+  const handleSave = async () => {
+    try {
+      const userData = sessionStorage.getItem("userData");
+      if (!userData) {
+        console.error("No user data found in sessionStorage");
+        return;
+      }
+
+      const { _id: userId } = JSON.parse(userData);
+
+      const response = await axios.post("http://localhost:5000/api/lifeStyle", {
+        userId,
+        drink,
+        smoke,
+        diet,
+        sunsign,
+        bloodgroup,
+        bodyType,
+        skinType,
+      });
+
+      console.log("Lifestyle updated successfully:", response.data);
+      toast.success("Lifestyle updated successfully!");
+    } catch (error) {
+      console.error("Error updating lifestyle:", error);
+    }
+  };
+
+  
+
+  const handleClear = () => {
+    // Reset all fields
+    setDrink('');
+    setSmoke('');
+    setDiet('');
+    setSunsign('');
+    setBloodgroup('');
+    setBodyType('');
+    setSkinType('');
   };
 
   return (
-    <Box sx={{ fontFamily: "Outfit, sans-serif", padding: "16px" }}>
-      <Stack spacing={3}>
-        {/* LifeStyle Section */}
-        <Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ marginBottom: "8px" }}
-          >
-            <Typography variant="h6" color='#34495e' fontWeight={700}>Life Style</Typography>
-            <IconButton onClick={handleOpenDialog} sx={{ color: "#1976d2" }}>
-              <FaEdit />
-            </IconButton>
-          </Box>
-          <Table sx={{ border: "1px solid #ddd" }}>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f5f5f5",fontSize:'18px' }}>
-                  Category
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f5f5f5" ,fontSize:'18px'}}>
-                  Value
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Drink</TableCell>
-                <TableCell>{drink}</TableCell>
-              </TableRow>
-              <TableRow sx={{ backgroundColor: "#f9f9f9" }}>
-                <TableCell>Smoke</TableCell>
-                <TableCell>{smoke}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Diet</TableCell>
-                <TableCell>{diet}</TableCell>
-              </TableRow>
-              <TableRow sx={{ backgroundColor: "#f9f9f9" }}>
-                <TableCell>Sunsign</TableCell>
-                <TableCell>{sunsign}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Blood Group</TableCell>
-                <TableCell>{bloodgroup}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Box>
+    <>
+  <Box
+  sx={{
+    fontFamily: "Outfit, sans-serif",
+    padding: "16px",
+    width: "80%",
+  }}
+>
+  <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+    <Typography variant="h5" color="#34495e" fontWeight={700}>
+      Life Style & Appearance
+    </Typography>
+  </Box>
 
-        {/* Appearance Section */}
-        <Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ marginBottom: "8px" }}
-          >
-            <Typography variant="h6" color="#34495e" fontWeight={700}>Appearance</Typography>
-            <IconButton onClick={handleOpenDialog} sx={{ color: "#1976d2" }}>
-              <FaEdit />
-            </IconButton>
-          </Box>
-          <Table sx={{ border: "1px solid #ddd" }}>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f5f5f5",fontSize:'18px' }}>
-                  Category
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", backgroundColor: "#f5f5f5",fontSize:'18px' }}>
-                  Value
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Body Type</TableCell>
-                <TableCell>{bodyType}</TableCell>
-              </TableRow>
-              <TableRow sx={{ backgroundColor: "#f9f9f9" }}>
-                <TableCell>Skin Type</TableCell>
-                <TableCell>{skinType}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Box>
-      </Stack>
+  <Box
+    sx={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "16px",
+      rowGap: "24px",
+    }}
+  >
+    {/* Drink */}
+    <TextField
+      select
+      label="Drink"
+      fullWidth
+      value={drink}
+      onChange={(e) => setDrink(e.target.value)}
+    >
+      <MenuItem value="Yes">Yes</MenuItem>
+      <MenuItem value="No">No</MenuItem>
+      <MenuItem value="Occasionally">Occasionally</MenuItem>
+    </TextField>
 
-      {/* Dialog */}
-      <Dialog
-        maxWidth="md"
-        open={openDialog}
-        onClose={handleCloseDialog}
-        PaperProps={{
-          style: {
-            width: "50%",
-            position: "fixed",
-            top: "40%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-      >
-        <Box sx={{ padding: "16px", fontFamily: "Outfit, sans-serif" }}>
-          <DialogContent>
-            <Typography variant="h6" sx={{ marginBottom: "16px" }}>
-              Life Style & Appearance
-            </Typography>
-            <DialogActions>
-              <FaTimes
-                onClick={handleCloseDialog}
-                style={{ cursor: "pointer", fontSize: "20px", color: "#d32f2f" }}
-              />
-            </DialogActions>
+    {/* Smoke */}
+    <TextField
+      select
+      label="Smoke"
+      fullWidth
+      value={smoke}
+      onChange={(e) => setSmoke(e.target.value)}
+    >
+      <MenuItem value="Yes">Yes</MenuItem>
+      <MenuItem value="No">No</MenuItem>
+      <MenuItem value="Occasionally">Occasionally</MenuItem>
+    </TextField>
 
-            <form onSubmit={handleAllDataSubmit}>
-              <Box sx={{ marginBottom: "16px" }}>
-                <Typography>Drink</Typography>
-                <Select
-                  size="small"
-                  fullWidth
-                  value={drink}
-                  onChange={(e) => setDrink(e.target.value)}
-                >
-                  <MenuItem value="Yes">Yes</MenuItem>
-                  <MenuItem value="No">No</MenuItem>
-                  <MenuItem value="Occasionally">Occasionally</MenuItem>
-                </Select>
-              </Box>
+    {/* Diet */}
+    <TextField
+      select
+      label="Diet"
+      fullWidth
+      value={diet}
+      onChange={(e) => setDiet(e.target.value)}
+    >
+      <MenuItem value="Veg">Veg</MenuItem>
+      <MenuItem value="Non-Veg">Non-Veg</MenuItem>
+      <MenuItem value="Eggetarian">Eggetarian</MenuItem>
+    </TextField>
 
-              {/* Repeat similar structure for Smoke, Diet, Sunsign, Blood Group, Skin Type, Body Type */}
-              <Divider sx={{ marginY: "16px" }} />
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="outlined" onClick={handleCloseDialog}>
-                  Close
-                </Button>
-                <Button type="submit" variant="contained">
-                  Save Changes
-                </Button>
-              </Box>
-            </form>
-          </DialogContent>
-        </Box>
-      </Dialog>
-    </Box>
-  );
+    {/* Sunsign */}
+    <TextField
+      select
+      label="Sunsign"
+      fullWidth
+      value={sunsign}
+      onChange={(e) => setSunsign(e.target.value)}
+    >
+      <MenuItem value="Aries">Aries</MenuItem>
+      <MenuItem value="Taurus">Taurus</MenuItem>
+      <MenuItem value="Gemini">Gemini</MenuItem>
+      <MenuItem value="Cancer">Cancer</MenuItem>
+    </TextField>
+
+    {/* Blood Group */}
+    <TextField
+      select
+      label="Blood Group"
+      fullWidth
+      value={bloodgroup}
+      onChange={(e) => setBloodgroup(e.target.value)}
+    >
+      <MenuItem value="A+">A+</MenuItem>
+      <MenuItem value="B+">B+</MenuItem>
+      <MenuItem value="O+">O+</MenuItem>
+      <MenuItem value="AB+">AB+</MenuItem>
+    </TextField>
+
+    {/* Body Type */}
+    <TextField
+      select
+      label="Body Type"
+      fullWidth
+      value={bodyType}
+      onChange={(e) => setBodyType(e.target.value)}
+    >
+      <MenuItem value="Slim">Slim</MenuItem>
+      <MenuItem value="Athletic">Athletic</MenuItem>
+      <MenuItem value="Average">Average</MenuItem>
+    </TextField>
+
+    {/* Skin Type */}
+    <TextField
+      select
+      label="Skin Type"
+      fullWidth
+      value={skinType}
+      onChange={(e) => setSkinType(e.target.value)}
+    >
+      <MenuItem value="Fair">Fair</MenuItem>
+      <MenuItem value="Wheatish">Wheatish</MenuItem>
+      <MenuItem value="Dark">Dark</MenuItem>
+    </TextField>
+  </Box>
+ 
+  <Box display="flex" justifyContent="end" gap={1} mt={3} >
+    <Button variant="contained" sx={{background:'#34495e'}} onClick={handleSave}>
+      Save
+    </Button>
+    <Button variant="outlined" sx={{background:'#34495e',color:'#fff',border:'none'}} onClick={handleClear}>
+      Clear
+    </Button>
+  </Box>
+
+</Box>
+
+  </>
+  )
 };
-
 export default LifeStyle;

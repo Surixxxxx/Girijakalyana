@@ -144,7 +144,7 @@ const MyMatches = () => {
               <Typography variant="h6" fontWeight="bold" color="#34495e">
                 Naveen
               </Typography>
-              <Typography color="text.secondary">Bangalore</Typography>
+              <Typography color="text.primary">Bangalore</Typography>
               <Box
                 sx={{
                   display: "flex",
@@ -156,7 +156,7 @@ const MyMatches = () => {
                   <Typography variant="body1" fontWeight="bold">
                     {card.id}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.primary">
                     Age
                   </Typography>
                 </Box>
@@ -164,7 +164,7 @@ const MyMatches = () => {
                   <Typography variant="body1" fontWeight="bold">
                     5.4
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.primary">
                     Height
                   </Typography>
                 </Box>
@@ -172,7 +172,7 @@ const MyMatches = () => {
                   <Typography variant="body1" fontWeight="bold">
                     SGM333
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.primary">
                     Reg No
                   </Typography>
                 </Box>

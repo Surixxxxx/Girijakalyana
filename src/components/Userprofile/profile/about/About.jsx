@@ -1,207 +1,216 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Dialog,
-  DialogContent,
-  DialogActions,
   Typography,
   TextField,
   Button,
-  IconButton,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
 } from "@mui/material";
-import { FaEdit } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const About = ({ render }) => {
-  const [pincode, setPincode] = useState("583115");
-  const [address, setAddress] = useState("Bengalore");
-  const [occupationCountry, setOccupationCountry] = useState("India");
-  const [language, setLanguage] = useState("Kannada");
-  const [dialog, setDialog] = useState({ open: false, type: "" });
-  const [mobail, setMobail] = useState('');
-  const [email, setEmail] = useState('');
+  const [pincode, setPincode] = useState("");
+  const [address, setAddress] = useState("");
+  const [occupationCountry, setOccupationCountry] = useState("");
+  const [language, setLanguage] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [email, setEmail] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
- useEffect(() => {
-    const storedMobail = sessionStorage.getItem('mobail');
-    const storedEmail = sessionStorage.getItem('email');
-
-    console.log('Retrieved from sessionStorage:', { storedMobail, storedEmail });
-
-   
-    if (storedMobail) setMobail(storedMobail);
-    if (storedEmail) setEmail(storedEmail);
-    // if (storedLastName) setLastName(storedLastName);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = sessionStorage.getItem("userId"); // Get the user ID from sessionStorage
+        if (!userId) {
+          toast.error("User ID not found. Please log in again.");
+          return;
+        }
+  
+        // Fetch the data from the API
+        const response = await fetch(`http://localhost:5000/api/about/${userId}?cache_bust=${new Date().getTime()}`);
+        
+        if (!response.ok) {
+          toast.error("Failed to fetch user data.");
+          return;
+        }
+  
+        const userData = await response.json();
+  
+        // Set the state with the fetched data
+        setAddress(userData.address || "");
+        setPincode(userData.pincode || "");
+        setOccupationCountry(userData.occupationCountry || "");
+        setLanguage(userData.language || "");
+  
+        // Fetch and set other data (email and mobile) from sessionStorage
+        const storedMobile = sessionStorage.getItem("mobile");
+        const storedEmail = sessionStorage.getItem("email");
+        if (storedEmail) setEmail(storedEmail);
+        if (storedMobile) setMobile(storedMobile);
+  
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("An error occurred while fetching data.");
+      }
+    };
+  
+    fetchData();
   }, []);
-
-
-  const handleOpenDialog = (type) => setDialog({ open: true, type });
-  const handleCloseDialog = () => setDialog({ open: false, type: "" });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { type } = dialog;
-
-    if (type === "address") {
-      setAddress(e.target.elements.address.value);
-      setPincode(e.target.elements.pincode.value);
-    } else if (type === "occupationCountry") {
-      setOccupationCountry(e.target.elements.occupationCountry.value);
-    } else if (type === "language") {
-      setLanguage(e.target.elements.language.value);
+  
+  const handleSave = async () => {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) {
+      toast.error("User ID not found. Please login again.");
+      return;
     }
 
-    handleCloseDialog();
-    render(true);
+    const updatedData = {
+      pincode,
+      address,
+      occupationCountry,
+      language,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/update/${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        toast.success("User updated successfully!");
+        setIsEditing(false); // Exit edit mode
+      } else {
+        const errorData = await response.json();
+        const errorMessage = errorData.message || "Failed to update data.";
+        toast.error(errorMessage);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      toast.error("An error occurred during the request.");
+    }
+  };
+
+  const handleClear = () => {
+    setPincode("");
+    setAddress("");
+    setOccupationCountry("");
+    setLanguage("");
   };
 
   return (
-    <Box sx={{ padding: 4, backgroundColor: "#f9f9f9", borderRadius: 2 }}>
-      <Stack spacing={5}>
-        {/* Basic Information */}
-        <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: "#2c3e50", fontWeight: 600 }}>
-            Basic Information
-          </Typography>
-          <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Email Id</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>{email}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Phone No.</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>{mobail}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Address</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>
-                    {address}
-                    <IconButton
-                      onClick={() => handleOpenDialog("address")}
-                      sx={{ ml: 1 }}
-                    >
-                      <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Pin Code</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>{pincode}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+    <Box
+      padding={1}
+      sx={{
+        boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
+        borderRadius: "8px",
+        backgroundColor: "#fff",
+        width:'90%'
+      }}
+    >
+      <Box sx={{ display: "flex", justifyContent: "flex-end",  }}>
+        <Button
+          variant={isEditing ? "outlined" : "contained"}
+          style={{
+            cursor: "pointer",
+            color: "#fff",
+            fontSize: "16px",
+            background: `${isEditing ? "red" : "#34495e"}`,
+            textTransform: "capitalize",
+            marginRight:'62px',
+            border:'none'
+          }}
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          {isEditing ? "Cancel" : "Edit"}
+        </Button>
+      </Box>
 
-        {/* Personal Information */}
-        <Box>
-          <Typography variant="h5" gutterBottom sx={{ color: "#2c3e50", fontWeight: 600 }}>
-            Personal Information
-          </Typography>
-          <TableContainer component={Paper} sx={{ boxShadow: 3, borderRadius: 2 }}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Language</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>
-                    {language}
-                    <IconButton
-                      onClick={() => handleOpenDialog("language")}
-                      sx={{ ml: 1 }}
-                    >
-                      <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700, fontSize: "1rem", color: "#34495e" }}>Occupation Country</TableCell>
-                  <TableCell sx={{ fontSize: "1rem" }}>
-                    {occupationCountry}
-                    <IconButton
-                      onClick={() => handleOpenDialog("occupationCountry")}
-                      sx={{ ml: 1 }}
-                    >
-                      <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+      <Stack >
+        <Box sx={{ display: "flex", gap: "20px", justifyContent: "space-evenly" }}>
+          <Box>
+            <Typography variant="h5" fontWeight={700} color="#34495e" gutterBottom>
+              Basic Information
+            </Typography>
+            <Stack spacing={3}>
+              <TextField
+                label="Email"
+                value={email}
+                disabled
+                sx={{ width: "500px" }}
+              />
+              <TextField
+                label="Phone No."
+                value={mobile}
+                disabled
+                sx={{ width: "500px" }}
+              />
+              <TextField
+                label="Address"
+                placeholder="Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                disabled={!isEditing}
+                sx={{ width: "500px" }}
+              />
+              <TextField
+                label="Pin Code"
+                placeholder="Pin Code"
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)}
+                disabled={!isEditing}
+                sx={{ width: "500px" }}
+              />
+            </Stack>
+          </Box>
+
+          <Box>
+            <Typography variant="h5" fontWeight={700} color="#34495e" gutterBottom>
+              Personal Information
+            </Typography>
+            <Stack spacing={3}>
+              <TextField
+                label="Language"
+                placeholder="Language"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                disabled={!isEditing}
+                sx={{ width: "500px" }}
+              />
+              <TextField
+                label="Occupation Country"
+                placeholder="Occupation Country"
+                value={occupationCountry}
+                onChange={(e) => setOccupationCountry(e.target.value)}
+                disabled={!isEditing}
+                sx={{ width: "500px" }}
+              />
+            </Stack>
+          </Box>
         </Box>
       </Stack>
 
-      {/* Dialog for Editing */}
-      <Dialog open={dialog.open} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-        <form onSubmit={handleSubmit}>
-          <DialogContent>
-            {dialog.type === "address" && (
-              <>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  Edit Address
-                </Typography>
-                <TextField
-                  fullWidth
-                  label="Address"
-                  name="address"
-                  defaultValue={address}
-                  margin="normal"
-                />
-                <TextField
-                  fullWidth
-                  label="Pin Code"
-                  name="pincode"
-                  defaultValue={pincode}
-                  margin="normal"
-                />
-              </>
-            )}
-            {dialog.type === "occupationCountry" && (
-              <>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  Edit Occupation Country
-                </Typography>
-                <TextField
-                  fullWidth
-                  label="Occupation Country"
-                  name="occupationCountry"
-                  defaultValue={occupationCountry}
-                  margin="normal"
-                />
-              </>
-            )}
-            {dialog.type === "language" && (
-              <>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                  Edit Language
-                </Typography>
-                <TextField
-                  fullWidth
-                  label="Language"
-                  name="language"
-                  defaultValue={language}
-                  margin="normal"
-                />
-              </>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} sx={{ fontWeight: 600 ,"&:hover":{backgroundColor:'transparent'} }}>
-              Cancel
-            </Button>
-            <Button type="submit"  color="primary" sx={{ fontWeight: 600,"&:hover":{backgroundColor:'transparent'} }}>
-              Save Changes
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+      {isEditing && (
+        <Box mt={3} display="flex" gap={2} sx={{marginRight:'62px'}} justifySelf="flex-end">
+          <Button
+            variant="contained"
+            sx={{ background: "#34495e", textTransform: "capitalize" }}
+            onClick={handleClear}
+          >
+            Clear
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ background: "#34495e", textTransform: "capitalize" }}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

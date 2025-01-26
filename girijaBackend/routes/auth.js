@@ -1,4 +1,6 @@
+
 const express = require('express');
+
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
@@ -94,6 +96,7 @@ router.post('/auth/verify-otp', (req, res) => {
   }
 });
 
+
 // Endpoint: Reset Password
 router.post('/auth/reset-password', async (req, res) => {
   try {
@@ -148,6 +151,13 @@ router.post('/auth/reset-password', async (req, res) => {
 // Environment variables
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_key';
 
+// const generateUserId = () => {
+//   const timestamp = Date.now(); // Current timestamp
+//   const randomString = Math.random().toString(36).substring(2, 8); // Random alphanumeric string
+//   return `USER-${timestamp}-${randomString.toUpperCase()}`; // Format: USER-<timestamp>-<random>
+// };
+
+
 // Register a user
 router.post('/auth/register', async (req, res) => {
   try {
@@ -188,9 +198,19 @@ router.post('/auth/register', async (req, res) => {
       password: hashedPassword,
      
     });
-
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully.', user: newUser });
+
+    // Creating response structure with userId at the top
+    const userResponse = {
+      userId: newUser.userId,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      mobile: newUser.mobile,
+      id: newUser._id, // Keep MongoDB _id as id for easy reference
+    };
+
+    res.status(201).json({ message: 'User registered successfully.', user: userResponse });
   } catch (error) {
     console.error('Error in Register:', error);
     res.status(500).json({ message: 'Server error.', error: error.message });
@@ -217,14 +237,9 @@ router.post('/auth/login', async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ message: 'Login successful.', token,  user: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      mobail: user.mobile,
-      id: user._id,
-    },
-   });
+
+    res.status(200).json({ message: 'Login successful.', token, user });
+
    
   } catch (error) {
     console.error('Error in Login:', error);

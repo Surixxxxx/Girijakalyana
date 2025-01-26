@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -10,30 +10,101 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import { FaCheck, FaRedo } from "react-icons/fa";
 import jsonData from "../eduction/jsondata/data.json";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const ParentsPrefer = () => {
   const datas = jsonData;
 
-  const [caste, setCaste] = useState(null);
-  const [fromAge, setFromAge] = useState(null);
-  const [toAge, setToAge] = useState(null);
-  const [fromHeight, setFromHeight] = useState(null);
-  const [toHeight, setToHeight] = useState(null);
-  const [occupation, setOccupation] = useState(null);
-  const [marrital, setMarrital] = useState(null);
-  const [education, setEducation] = useState(null);
+  const [preferences, setPreferences] = useState({
+    caste: "",
+    fromAge: "",
+    toAge: "",
+    fromHeight: "",
+    toHeight: "",
+    occupation: "",
+    maritalStatus: "",
+    education: "",
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userData = sessionStorage.getItem("userData");
+      if (!userData) {
+        toast.error("No user data found. Please log in.");
+        return;
+      }
+      const { _id: userId } = JSON.parse(userData);
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/parentsPrefer/${userId}`
+        );
+        const parentPrefer = response.data?.parentPrefer || {};
+        setPreferences({
+          caste: parentPrefer.caste || "",
+          fromAge: parentPrefer.fromAge || "",
+          toAge: parentPrefer.toAge || "",
+          fromHeight: parentPrefer.fromHeight || "",
+          toHeight: parentPrefer.toHeight || "",
+          occupation: parentPrefer.occupation || "",
+          maritalStatus: parentPrefer.maritalStatus || "",
+          education: parentPrefer.education || "",
+        });
+      } catch (error) {
+        console.error("Error fetching preferences:", error);
+        toast.error("Failed to load preferences.");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleChange = (key, value) => {
+    setPreferences((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    const userData = sessionStorage.getItem("userData");
+    if (!userData) {
+      toast.error("No user data found. Please log in.");
+      return;
+    }
+
+    const { _id: userId } = JSON.parse(userData);
+
+    const payload = {
+      userId,
+      parentPrefer: preferences,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/parentsPrefer",
+        payload
+      );
+      toast.success("Preferences saved successfully!");
+    } catch (error) {
+      console.error("Error saving preferences:", error);
+      toast.error("Failed to save preferences.");
+    }
+  };
 
   const handleReset = () => {
-    setCaste(null);
-    setFromAge(null);
-    setToAge(null);
-    setFromHeight(null);
-    setToHeight(null);
-    setOccupation(null);
-    setMarrital(null);
-    setEducation(null);
+    setPreferences({
+      caste: "",
+      fromAge: "",
+      toAge: "",
+      fromHeight: "",
+      toHeight: "",
+      occupation: "",
+      maritalStatus: "",
+      education: "",
+    });
   };
 
   return (
@@ -44,15 +115,15 @@ const ParentsPrefer = () => {
         borderRadius: "12px",
         boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         fontFamily: "Roboto, sans-serif",
+        width: "80%",
       }}
     >
-      {/* Title */}
       <Typography
         variant="h6"
         sx={{
           textAlign: "center",
-          fontWeight:700,
-          fontSize:'22px',
+          fontWeight: 700,
+          fontSize: "22px",
           color: "#34495e",
           marginBottom: "24px",
         }}
@@ -60,18 +131,16 @@ const ParentsPrefer = () => {
         Parents' Preference
       </Typography>
 
-      {/* Form Section */}
       <Stack direction="row" spacing={4}>
-        {/* Left Column */}
         <Box flex={1}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="caste-field-label">Caste Preference</InputLabel>
+                <InputLabel id="caste" shrink={!!preferences.caste}>Caste Preference</InputLabel>
                 <Select
-                  labelId="caste-field-label"
-                  value={caste}
-                  onChange={(e) => setCaste(e.target.value)}
+                labelId="caste"
+                  value={preferences.caste}
+                  onChange={(e) => handleChange("caste", e.target.value)}
                 >
                   {datas[0].casteValues.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -83,13 +152,10 @@ const ParentsPrefer = () => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="from-age-label">
-                  Age Preference (From)
-                </InputLabel>
+                <InputLabel shrink={!!preferences.fromAge}>Age Preference (From)</InputLabel>
                 <Select
-                  labelId="from-age-label"
-                  value={fromAge}
-                  onChange={(e) => setFromAge(e.target.value)}
+                  value={preferences.fromAge}
+                  onChange={(e) => handleChange("fromAge", e.target.value)}
                 >
                   {datas[9].minAge.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -101,13 +167,10 @@ const ParentsPrefer = () => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="from-height-label">
-                  Height Preference (From)
-                </InputLabel>
+                <InputLabel shrink={!!preferences.fromHeight}>Height Preference (From)</InputLabel>
                 <Select
-                  labelId="from-height-label"
-                  value={fromHeight}
-                  onChange={(e) => setFromHeight(e.target.value)}
+                  value={preferences.fromHeight}
+                  onChange={(e) => handleChange("fromHeight", e.target.value)}
                 >
                   {datas[5].heightValues.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -119,11 +182,10 @@ const ParentsPrefer = () => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="occupation-label">Occupation Country</InputLabel>
+                <InputLabel shrink={!!preferences.occupation}>Occupation Country</InputLabel>
                 <Select
-                  labelId="occupation-label"
-                  value={occupation}
-                  onChange={(e) => setOccupation(e.target.value)}
+                  value={preferences.occupation}
+                  onChange={(e) => handleChange("occupation", e.target.value)}
                 >
                   <MenuItem value="India">India</MenuItem>
                   <MenuItem value="China">China</MenuItem>
@@ -134,18 +196,14 @@ const ParentsPrefer = () => {
           </Grid>
         </Box>
 
-        {/* Right Column */}
         <Box flex={1}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="education-label">
-                  Education Preference
-                </InputLabel>
+                <InputLabel shrink={!!preferences.education}>Education Preference</InputLabel>
                 <Select
-                  labelId="education-label"
-                  value={education}
-                  onChange={(e) => setEducation(e.target.value)}
+                  value={preferences.education}
+                  onChange={(e) => handleChange("education", e.target.value)}
                 >
                   {datas[4].qualificationValues.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -157,11 +215,10 @@ const ParentsPrefer = () => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="to-age-label">Age Preference (To)</InputLabel>
+                <InputLabel shrink={!!preferences.toAge}>Age Preference (To)</InputLabel>
                 <Select
-                  labelId="to-age-label"
-                  value={toAge}
-                  onChange={(e) => setToAge(e.target.value)}
+                  value={preferences.toAge}
+                  onChange={(e) => handleChange("toAge", e.target.value)}
                 >
                   {datas[9].minAge.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -173,13 +230,10 @@ const ParentsPrefer = () => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="to-height-label">
-                  Height Preference (To)
-                </InputLabel>
+                <InputLabel shrink={!!preferences.toHeight}>Height Preference (To)</InputLabel>
                 <Select
-                  labelId="to-height-label"
-                  value={toHeight}
-                  onChange={(e) => setToHeight(e.target.value)}
+                  value={preferences.toHeight}
+                  onChange={(e) => handleChange("toHeight", e.target.value)}
                 >
                   {datas[5].heightValues.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -191,11 +245,10 @@ const ParentsPrefer = () => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="marrital-label">Marital Status</InputLabel>
+                <InputLabel shrink={!!preferences.maritalStatus}>Marital Status</InputLabel>
                 <Select
-                  labelId="marrital-label"
-                  value={marrital}
-                  onChange={(e) => setMarrital(e.target.value)}
+                  value={preferences.maritalStatus}
+                  onChange={(e) => handleChange("maritalStatus", e.target.value)}
                 >
                   {datas[6].marritalStatus.map((item, index) => (
                     <MenuItem key={index} value={item}>
@@ -209,36 +262,30 @@ const ParentsPrefer = () => {
         </Box>
       </Stack>
 
-      {/* Buttons */}
       <Box
         sx={{
           marginTop: "24px",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "flex-end",
           gap: "16px",
         }}
       >
         <Button
           variant="contained"
-      
-          onClick={() => alert("Preferences Submitted!")}
+          onClick={handleSubmit}
           sx={{
             backgroundColor: "#34495e",
-            "&:hover": { backgroundColor: "#115293" },
-             textTransform:'capitalize'
           }}
         >
           Submit
         </Button>
         <Button
           variant="outlined"
-       
           onClick={handleReset}
           sx={{
-            borderColor: "#1976d2",
-            color: "#1976d2",
-            "&:hover": { backgroundColor: "#f0f7ff" },
-            textTransform:'capitalize'
+            backgroundColor: "#34495e",
+            color: "#fff",
+            border: "none",
           }}
         >
           Reset
@@ -248,4 +295,4 @@ const ParentsPrefer = () => {
   );
 };
 
-export default ParentsPrefer;
+export default memo(ParentsPrefer);

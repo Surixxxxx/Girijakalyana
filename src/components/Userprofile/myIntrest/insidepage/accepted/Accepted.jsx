@@ -70,7 +70,7 @@ const Accepted = () => {
               <Typography variant="h6" fontWeight="bold">
               {card.name}
               </Typography>
-              <Typography color="text.secondary">Bangalore</Typography>
+              <Typography color="text.primary">Bangalore</Typography>
               <Box
                 sx={{
                   display: "flex",
@@ -82,7 +82,7 @@ const Accepted = () => {
                   <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     {card.id}
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.primary">
                     Age
                   </Typography>
                 </Box>
@@ -90,7 +90,7 @@ const Accepted = () => {
                   <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     5.4
                   </Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.primary">
                     Height
                   </Typography>
                 </Box>
@@ -98,7 +98,7 @@ const Accepted = () => {
                   <Typography variant="body1" fontWeight="bold" sx={{  color:'black'}}>
                     SGM333
                   </Typography>
-                  <Typography variant="caption" color="text.secondary" >
+                  <Typography variant="caption" color="text.primary" >
                     Reg No
                   </Typography>
                 </Box>

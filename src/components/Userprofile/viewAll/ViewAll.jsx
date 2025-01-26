@@ -159,7 +159,6 @@ const ViewAll = () => {
         <Dialog
       maxWidth="md"
       open={openDialog}
-      onClose={handleCloseDialog}
       PaperProps={{
         style: {
           position: "fixed",
@@ -206,15 +205,20 @@ const ViewAll = () => {
               value={details}
               onChange={handleChange}
               centered
-              // textColor="primary"
-              // indicatorColor="primary"
+              textColor="primary"
+              indicatorColor="primary"
               sx={{ mb: 2 }}
             >
-              <Tab label="About" sx={{color:'#fff'}} />
-              <Tab label="Family" sx={{color:'#fff'}}/>
-              <Tab label="Education" sx={{color:'#fff'}}/>
-              <Tab label="LifeStyle" sx={{color:'#fff'}}/>
-              <Tab label="Preference" sx={{color:'#fff'}}/>
+              <Tab label="About" sx={{color:'#fff',"&:hover": {
+            backgroundColor: "transparent"}}} />
+              <Tab label="Family" sx={{color:'#fff',"&:hover": {
+            backgroundColor: "transparent"}}}/>
+              <Tab label="Education" sx={{color:'#fff',"&:hover": {
+            backgroundColor: "transparent"}}}/>
+              <Tab label="LifeStyle" sx={{color:'#fff',"&:hover": {
+            backgroundColor: "transparent"}}}/>
+              <Tab label="Preference" sx={{color:'#fff',"&:hover": {
+            backgroundColor: "transparent"}}}/>
             </Tabs>
             <Box
               sx={{
@@ -234,7 +238,7 @@ const ViewAll = () => {
         <Box sx={{ display: "flex",justifyContent:'start', alignItems: "center",gap:'60px',marginLeft:'15px' }}>
           {/* Verified Section */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <h2 style={{ color: "#28a745", fontWeight: 600 }}>Verified</h2>
+            <h2 style={{ color: "aqua", fontWeight: 600 }}>Verified</h2>
            
           </Box>
           <Box>
@@ -245,10 +249,26 @@ const ViewAll = () => {
               textTransform:'capitalize',
               color:'#34495e',
               fontWeight:700,
-              fontSize:'20px'
-             }}
+              "&:hover": {
+            backgroundColor: "#fff"}}
+              }
             >
               Express Interest
+            </Button>
+            <Button
+             variant="contained"
+             onClick={handleCloseDialog}
+             sx={{
+              backgroundColor:'#fff',
+              textTransform:'capitalize',
+              color:'#34495e',
+              marginLeft:'30px',
+              fontWeight:700,
+              "&:hover": {
+            backgroundColor: "#fff"}}
+              }
+            >
+              Cancel
             </Button>
           </Box>
         </Box>

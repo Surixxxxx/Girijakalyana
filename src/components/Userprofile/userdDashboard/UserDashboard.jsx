@@ -34,17 +34,7 @@ const UserDashboard = () => {
     // if (storedLastName) setLastName(storedLastName);
   }, []);
 
-  // const handleCardClick = (index) => {
-  //   const selectedCard = userCard[index];
-  //   setSelectedCardDetails(selectedCard);
-  //   setSelectedCardIndex(index);
-  //   setPopupOpen(true);
-  // };
 
-  const closePopup = () => {
-    setPopupOpen(false);
-    setSelectedCardIndex(null);
-  };
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -85,7 +75,7 @@ const UserDashboard = () => {
             boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
           },
         }}
-        onClick={() => handleCardClick(index)}
+        // onClick={() => handleCardClick(index)}
       >
         <Box display="flex" alignItems="center">
           <img 
@@ -102,7 +92,7 @@ const UserDashboard = () => {
             <Typography variant="h6" fontWeight="bold" color="#34495e">
               {card.name}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="body2" color="textprimary">
               {card.address.street}
             </Typography>
           </Box>
@@ -158,13 +148,15 @@ const UserDashboard = () => {
             { count: 2, label: "Messages", icon: FaRegEnvelope },
             { count: 3, label: "Chats", icon: MdOutlineChatBubble }].map(
               (item, index) => (
+                
+               
                 <Box
                   key={index}
                   sx={{
                     backgroundColor: "#ffffff",
                     borderRadius: "8px",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                    padding: "16px",
+                    padding: "14px 50px",
                     textAlign: "center",
                     flex: 1,
                     "&:hover": {
@@ -172,11 +164,19 @@ const UserDashboard = () => {
                     },
                   }}
                 >
-                  <item.icon size={40} color="#34495e" />
+                  <Box display={'flex'} alignItems={'center'} justifyContent={'space-around'}>
+                   <Typography>
+                   <item.icon size={40} color="black" />
+                </Typography>
+                 <Box display={'flex'} flexDirection={'column'}>
                   <Typography variant="h5" fontWeight="bold" mt={1}>
                     {item.count}
                   </Typography>
-                  <Typography variant="subtitle1">{item.label}</Typography>
+                  <Typography variant="subtitle1" 
+                  fontWeight={700}
+                  fontSize={20}
+                  sx={{color:'#34495e'}}
+                  >{item.label}</Typography>
                   <MuiLink
                     component={Link}
                     to="#"
@@ -184,6 +184,8 @@ const UserDashboard = () => {
                   >
                     View All
                   </MuiLink>
+                  </Box>
+                </Box>
                 </Box>
               )
             )}

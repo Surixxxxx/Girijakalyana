@@ -220,7 +220,7 @@ const NotificationData = () => {
             <Button variant="contained" color="primary" onClick={handleClosePopup}>
               Submit
             </Button>
-            <Button variant="outlined" color="secondary" onClick={handleClosePopup}>
+            <Button variant="outlined" color="primary" onClick={handleClosePopup}>
               Close
             </Button>
           </Box>

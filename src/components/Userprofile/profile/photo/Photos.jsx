@@ -65,7 +65,7 @@ const Photos = () => {
               sx={{ borderRadius: "12px 12px 0 0" }}
             />
             <CardActions sx={{ justifyContent: "center", padding: "16px" }}>
-              <Typography variant="subtitle1" color="text.secondary">
+              <Typography variant="subtitle1" color="text.primary">
                 Current Profile Picture
               </Typography>
             </CardActions>
@@ -95,7 +95,7 @@ const Photos = () => {
               />
               <Typography
                 variant="body2"
-                color="text.secondary"
+                color="text.primary"
                 sx={{ marginBottom: "16px", textAlign: "center" }}
               >
                 * Please upload high-resolution images only

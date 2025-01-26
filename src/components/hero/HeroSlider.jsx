@@ -76,7 +76,7 @@ const HeroSlider = () => {
         <Typography variant="h6" fontWeight={700} paragraph fontFamily={'Outfit sans-serif'} sx={{color:'#fff'}}>
           Join the most trusted  platform and start your journey towards a lifetime of happiness.
         </Typography>
-        <Button variant="contained" size="large" sx={{textTransform:'capitalize'}} color="secondary" fontFamily={'Outfit sans-serif'}>
+        <Button variant="contained" className="btn-getstart" size="large" sx={{textTransform:'capitalize'}}  fontFamily={'Outfit sans-serif'}>
           Get Started
         </Button>
       </Content>

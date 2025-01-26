@@ -1,214 +1,221 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Stack,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Divider,
-  Select,
-  MenuItem,
   Typography,
+  TextField,
   Button,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
-import { FaEdit, FaTimes } from "react-icons/fa";
-import json from "../eduction/jsondata/data.json";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const Education = ({ render }) => {
-  const Data = json;
-  const [degree, setDegree] = useState("B.E/B.Tech");
-  const [occupation, setOccupation] = useState("Software Engg");
-  const [income, setIncome] = useState("16Lakh-18Lakh");
-  const [occupationCountry, setOccupationCountry] = useState("India");
-  const [openDialog, setOpenDialog] = useState(null); // Keeps track of which dialog is open
+const Education = () => {
+  const [degree, setDegree] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [income, setIncome] = useState("");
+  const [occupationCountry, setOccupationCountry] = useState("");
+  const [userId,setUserId] = useState("");
+ 
+  // Toggle between dropdown and text input for each field
+  const [customDegree, setCustomDegree] = useState(false);
+  const [customOccupation, setCustomOccupation] = useState(false);
+  const [customIncome, setCustomIncome] = useState(false);
+  const [customCountry, setCustomCountry] = useState(false);
 
-  const handleOpenDialog = (type) => setOpenDialog(type);
-  const handleCloseDialog = () => setOpenDialog(null);
+  // Manually defined options
+  const qualificationOptions = ["B.E/B.Tech", "M.E/M.Tech", "MBA", "Ph.D", "Diploma"];
+  const occupationOptions = ["Software Engineer", "Doctor", "Teacher", "Business Owner", "Artist"];
+  const incomeOptions = ["Less than 5Lakh", "5Lakh-10Lakh", "10Lakh-15Lakh", "16Lakh-18Lakh", "More than 18Lakh"];
+  const countryOptions = ["India", "USA", "UK", "Canada", "Australia"];
 
-  const tableHeaderStyle = {
-    fontWeight: "bold",
-    backgroundColor: "#f4f6f8",
-    color: "#34495e",
-    fontSize:'18px',
-  };
+  const [education, setEducation] = useState(null); // Store education data
+  const [isNewRecord, setIsNewRecord] = useState(false); // Track if no existing record
+  const [error, setError] = useState(null); // Handle errors
 
-  const handleSubmit = (setter) => (e) => {
+  const [user, setUser] = useState(null); // Store the entire user object
+
+  useEffect(() => {
+      const fetchUserData = async () => {
+          try {
+              const userData = sessionStorage.getItem("userData");
+              if (userData) {
+                  const { _id: userId } = JSON.parse(userData);
+                  const response = await axios.get(`http://localhost:5000/api/user/${userId}`);
+                  setUser(response.data); // Store the entire user object
+                  if (response.data.education) {
+                      setDegree(response.data.education.degree || "");
+                      setOccupation(response.data.education.occupation || "");
+                      setIncome(response.data.education.income || "");
+                      setOccupationCountry(response.data.education.occupationCountry || "");
+                      setIsNewRecord(false);
+                  } else {
+                      setIsNewRecord(true);
+                  }
+              }
+          } catch (error) {
+              console.error("Error fetching user data:", error);
+              setIsNewRecord(true);
+          }
+      };
+
+      fetchUserData();
+  }, []);
+
+
+  const handleSave = async (e) => {
     e.preventDefault();
-    setter(e.target.value);
-    handleCloseDialog();
-    render(true);
+
+    const educationData = {
+      degree,
+      occupation,
+      income,
+      occupationCountry,
+    };
+
+    if (!degree || !occupation || !income || !occupationCountry) {
+      toast.error("Please fill in all fields before saving.");
+      return;
+    }
+
+    try {
+      const userData = sessionStorage.getItem("userData");
+      const { _id: userId } = JSON.parse(userData);
+
+      console.log("Sending Education Data:", educationData); // Debugging log
+      let response;
+      if (isNewRecord) {
+        response = await axios.post("http://localhost:5000/api/education", {
+          userId,
+          ...educationData,
+        });
+        toast.success("Education data saved successfully!", response.data);
+        setUser(response.data.user); // Update local user state after save
+        if(response.data.user.education){
+          setIsNewRecord(false)
+        }
+      } else {
+        response = await axios.put(`http://localhost:5000/api/education/${userId}`,{
+          userId,
+          ...educationData,
+        });
+        toast.success("Education data updated successfully!", response.data);
+        setEducation(response.data); // Update state with updated data after PUT
+      }
+    } catch (error) {
+      console.error("Error saving/updating data:", error);
+      if (error.response) {
+        toast.error(`Server Error: ${error.response.data.error || "Unknown error occurred"}`);
+      } else {
+        toast.error("Network Error. Please try again.");
+      }
+    }
   };
 
-  const DialogForm = ({ title, value, setValue, options }) => (
-    <Dialog open={openDialog === title} onClose={handleCloseDialog}>
-      <DialogContent>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-          <Typography variant="h6">{`Edit ${title}`}</Typography>
-          <IconButton onClick={handleCloseDialog}>
-            <FaTimes />
-          </IconButton>
-        </Box>
-        <form onSubmit={handleSubmit(setValue)}>
-          <Select
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            fullWidth
-            size="small"
-          >
-            {options.map((option, index) => (
-              <MenuItem value={option} key={index}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-          <Divider sx={{ my: 2 }} />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
-            <Button onClick={handleCloseDialog} variant="outlined" sx={{"&:hover":{backgroundColor:'transparent'}}}>
-              Close
+
+  const handleClear = () => {
+    setDegree("");
+    setOccupation("");
+    setIncome("");
+    setOccupationCountry("");
+    setCustomDegree(false);
+    setCustomOccupation(false);
+    setCustomIncome(false);
+    setCustomCountry(false);
+  };
+
+  const textFieldStyle = { width: "450px" };
+
+  return (
+    <Box sx={{  backgroundColor: "#f9f9f9", borderRadius: "8px",  width:'73%' }}>
+      <Stack spacing={3}>
+        <Typography variant="h5" gutterBottom sx={{ color: "#34495e" }}>
+          Education & Occupation
+        </Typography>
+        <form >
+          <Stack spacing={2}>
+            <Box display="flex" justifyContent="space-evenly" alignItems="center" gap={1}>
+              <Box>
+                <FormControlLabel
+                  control={<Checkbox checked={customDegree} onChange={(e) => setCustomDegree(e.target.checked)} />}
+                  label="Enter your Qualification"
+                />
+                {customDegree ? (
+                  <TextField label="Qualification" value={degree} onChange={(e) => setDegree(e.target.value)} sx={textFieldStyle} />
+                ) : (
+                  <TextField label="Qualification" value={degree} onChange={(e) => setDegree(e.target.value)} select sx={textFieldStyle}>
+                    {qualificationOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+
+                <FormControlLabel
+                  control={<Checkbox checked={customOccupation} onChange={(e) => setCustomOccupation(e.target.checked)} />}
+                  label="Enter your Occupation"
+                />
+                {customOccupation ? (
+                  <TextField label="Occupation" value={occupation} onChange={(e) => setOccupation(e.target.value)} sx={textFieldStyle} />
+                ) : (
+                  <TextField label="Occupation" value={occupation} onChange={(e) => setOccupation(e.target.value)} select sx={textFieldStyle}>
+                    {occupationOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              </Box>
+              <Box>
+                <FormControlLabel
+                  control={<Checkbox checked={customIncome} onChange={(e) => setCustomIncome(e.target.checked)} />}
+                  label="Enter your Income"
+                />
+                {customIncome ? (
+                  <TextField label="Income Per Annum" value={income} onChange={(e) => setIncome(e.target.value)} sx={textFieldStyle} />
+                ) : (
+                  <TextField label="Income Per Annum" value={income} onChange={(e) => setIncome(e.target.value)} select sx={textFieldStyle}>
+                    {incomeOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+
+                <FormControlLabel
+                  control={<Checkbox checked={customCountry} onChange={(e) => setCustomCountry(e.target.checked)} />}
+                  label="Enter your Occupation Country"
+                />
+                {customCountry ? (
+                  <TextField label="Occupation Country" value={occupationCountry} onChange={(e) => setOccupationCountry(e.target.value)} sx={textFieldStyle} />
+                ) : (
+                  <TextField label="Occupation Country" value={occupationCountry} onChange={(e) => setOccupationCountry(e.target.value)} select sx={textFieldStyle}>
+                    {countryOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              </Box>
+            </Box>
+          </Stack>
+
+          <Box sx={{ mt: 3,  justifySelf:'flex-end',display:'flex', gap:'10px'  }}>
+            <Button onClick={handleClear} variant="contained" sx={{ backgroundColor: "#34495e", textTransform: "capitalize", "&:hover": { backgroundColor: "#2c3e50" } }}>
+              Clear
             </Button>
-            <Button type="submit" variant="contained" sx={{"&:hover":{backgroundColor:'#34495e'},backgroundColor:'#34495e',textTransform:'capitalize'}}>
-              Save Changes
+            <Button onClick={handleSave} variant="contained" sx={{ backgroundColor: "#34495e", textTransform: "capitalize", "&:hover": { backgroundColor: "#2c3e50" } }}>
+              Save
             </Button>
           </Box>
         </form>
-      </DialogContent>
-    </Dialog>
-  );
-
-  return (
-    <Box sx={{ p: 3, backgroundColor: "#f9f9f9", borderRadius: "8px" }}>
-      <Stack spacing={3}>
-        <Typography variant="h5"  gutterBottom sx={{ color: "#34495e" }}>
-          Education & Occupation
-        </Typography>
-        <TableContainer
-          sx={{
-            border: "1px solid #e0e0e0",
-            borderRadius: "8px",
-            backgroundColor: "#ffffff",
-            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#2c3e50",
-                    fontSize: "18px",
-                    backgroundColor: "#ecf0f1",
-                  }}
-                >
-                  Category
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#2c3e50",
-                    fontSize: "18px",
-                    backgroundColor: "#ecf0f1",
-                  }}
-                >
-                  Details
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell style={tableHeaderStyle} sx={{ fontWeight: "bold", color: "#34495e" }}>
-                  Qualification
-                </TableCell>
-                <TableCell sx={{fontStyle:'18px'}}>
-                  {degree}
-                  <IconButton
-                    sx={{ ml: 1 }}
-                    onClick={() => handleOpenDialog("Qualification")}
-                  >
-                    <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={tableHeaderStyle} sx={{ fontWeight: "bold", color: "#34495e" }}>
-                  Occupation
-                </TableCell>
-                <TableCell sx={{fontStyle:'18px'}}>
-                  {occupation}
-                  <IconButton
-                    sx={{ ml: 1 }}
-                    onClick={() => handleOpenDialog("Occupation")}
-                  >
-                    <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell style={tableHeaderStyle} sx={{ fontWeight: "bold", color: "#34495e" }}>
-                  Income Per Annum
-                </TableCell>
-                <TableCell sx={{fontStyle:'18px'}} >
-                  {income}
-                  <IconButton
-                    sx={{ ml: 1 }}
-                    onClick={() => handleOpenDialog("Income")}
-                  >
-                    <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell  style={tableHeaderStyle} sx={{ fontWeight: "bold", color: "#34495e" }}>
-                  Occupation Country
-                </TableCell>
-                <TableCell sx={{fontStyle:'18px'}} >
-                  {occupationCountry}
-                  <IconButton
-                    sx={{ ml: 1 }}
-                    onClick={() => handleOpenDialog("Occupation Country")}
-                  >
-                    <FaEdit style={{ color: "#3498db",fontSize:'18px' }} />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
       </Stack>
-
-      {/* Dialogs */}
-      <DialogForm
-        title="Qualification"
-        value={degree}
-        setValue={setDegree}
-        options={Data[4].qualificationValues}
-       
-      />
-      <DialogForm
-        title="Occupation"
-        value={occupation}
-        setValue={setOccupation}
-        options={Data[3].occupationValues}
-      />
-      <DialogForm
-        title="Income"
-        value={income}
-        setValue={setIncome}
-        options={Data[2].incomeValues}
-      />
-      <DialogForm
-        title="Occupation Country"
-        value={occupationCountry}
-        setValue={setOccupationCountry}
-        options={Data[4].qualificationValues}
-      />
     </Box>
   );
 };
