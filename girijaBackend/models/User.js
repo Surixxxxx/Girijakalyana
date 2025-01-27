@@ -43,6 +43,7 @@ const UserSchema = new mongoose.Schema({
     maritalStatus: { type: String, required: false },
     education: { type: String, required: false },
   },
+  info: { type: String, required: true },
 
 });
 

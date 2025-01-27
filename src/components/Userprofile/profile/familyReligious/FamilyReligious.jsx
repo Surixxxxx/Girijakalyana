@@ -43,7 +43,7 @@ const FamilyReligious = ({email}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = localStorage.getItem("userData");
+        const userData = sessionStorage.getItem("userData");
         const { _id: userId } = JSON.parse(userData);
 
         const response = await axios.get(`http://localhost:5000/api/familyReligious/${userId}`);
@@ -51,11 +51,11 @@ const FamilyReligious = ({email}) => {
           setFields(response.data);
           setIsNewRecord(false);
         }
-      } catch (error) {
+      } catch (error) {     
         console.warn("No existing record found:", error);
         setIsNewRecord(true);
       }
-    };
+    };      
 
     fetchData();
   }, []);
@@ -85,7 +85,7 @@ const FamilyReligious = ({email}) => {
     const updatedFields = { ...fields, [selectedField]: tempValue };
 
     try {
-      const userData = localStorage.getItem("userData");
+      const userData = sessionStorage.getItem("userData");
       const { _id: userId } = JSON.parse(userData);
 
       if (isNewRecord) {
@@ -103,7 +103,7 @@ const FamilyReligious = ({email}) => {
         });
         toast.success(response.data.message || "Data updated successfully!");
       }
-
+   
       setFields(updatedFields);
       setIsNewRecord(false);
     } catch (error) {

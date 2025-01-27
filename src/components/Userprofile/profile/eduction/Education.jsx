@@ -40,7 +40,7 @@ const Education = () => {
   useEffect(() => {
       const fetchUserData = async () => {
           try {
-              const userData = localStorage.getItem("userData");
+              const userData = sessionStorage.getItem("userData");
               if (userData) {
                   const { _id: userId } = JSON.parse(userData);
                   const response = await axios.get(`http://localhost:5000/api/user/${userId}`);
@@ -81,7 +81,7 @@ const Education = () => {
     }
 
     try {
-      const userData = localStorage.getItem("userData");
+      const userData = sessionStorage.getItem("userData");
       const { _id: userId } = JSON.parse(userData);
 
     

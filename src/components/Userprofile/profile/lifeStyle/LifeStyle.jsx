@@ -22,7 +22,7 @@ const LifeStyle = ({ render }) => {
   // Fetch user data from localStorage and load their lifestyle
   useEffect(() => {
     const fetchData = async () => {
-      const userData = localStorage.getItem("userData");
+      const userData = sessionStorage.getItem("userData");
       if (!userData) {
         console.error("No user data found in localStorage");
         return;
@@ -40,13 +40,13 @@ const LifeStyle = ({ render }) => {
         const lifestyle = response.data.lifestyle;
 
         if (lifestyle) {
-          setDrink(lifestyle.drink || "No");
-          setSmoke(lifestyle.smoke || "No");
-          setDiet(lifestyle.diet || "Veg");
-          setSunsign(lifestyle.sunsign || "Aries");
-          setBloodgroup(lifestyle.bloodgroup || "A+");
-          setBodyType(lifestyle.bodyType || "Average");
-          setSkinType(lifestyle.skinType || "Fair");
+          setDrink(lifestyle.drink || "");
+          setSmoke(lifestyle.smoke || "");
+          setDiet(lifestyle.diet || "");
+          setSunsign(lifestyle.sunsign || "");
+          setBloodgroup(lifestyle.bloodgroup || "");
+          setBodyType(lifestyle.bodyType || "");
+          setSkinType(lifestyle.skinType || "");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -59,7 +59,7 @@ const LifeStyle = ({ render }) => {
 
   const handleSave = async () => {
     try {
-      const userData = localStorage.getItem("userData");
+      const userData = sessionStorage.getItem("userData");
       if (!userData) {
         console.error("No user data found in localStorage");
         return;
@@ -214,12 +214,12 @@ const LifeStyle = ({ render }) => {
   </Box>
  
   <Box display="flex" justifyContent="end" gap={1} mt={3} >
-    <Button variant="contained" sx={{background:'#34495e'}} onClick={handleSave}>
-      Save
-    </Button>
-    <Button variant="outlined" sx={{background:'#34495e',color:'#fff',border:'none'}} onClick={handleClear}>
+  <Button variant="outlined" sx={{background:'#34495e',color:'#fff',border:'none'}} onClick={handleClear}>
       Clear
     </Button>
+    <Button variant="contained" sx={{background:'#34495e'}} onClick={handleSave}>
+      Save
+    </Button> 
   </Box>
 
 </Box>

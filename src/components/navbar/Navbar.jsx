@@ -129,7 +129,7 @@ const handleLogin = async () => {
     localStorage.setItem('email', user.email);
     localStorage.setItem('mobile', user.mobile);
   localStorage.setItem('profileImg', JSON.stringify( user.profileImg));
-    // localStorage.setItem('userData', JSON.stringify(user));
+  sessionStorage.setItem('userData', JSON.stringify(user));
 
     toast.success('Login successful!');
     navigate('/user/userdashboard'); // Redirect user to the dashboard or home page

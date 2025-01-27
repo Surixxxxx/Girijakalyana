@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect, useState, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { CgSpinner,  CgSpinnerAlt } from 'react-icons/cg';
 
 // Lazy loading components
 const HeroSlider = lazy(() => import('./components/hero/HeroSlider'));
@@ -72,15 +73,15 @@ const Spinner = () => {
 };
 
 const App = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
+  // const [isAdmin, setIsAdmin] = useState(false);
+  // const [isLogged, setIsLogged] = useState(false);
 
-  useEffect(() => {
-    const adminStatus = localStorage.getItem('isAdmin');
-    const loginStatus = localStorage.getItem('islogged');
-    setIsAdmin(adminStatus === 'true');
-    setIsLogged(loginStatus === 'true');
-  }, []);
+  // useEffect(() => {
+  //   const adminStatus = localStorage.getItem('isAdmin');
+  //   const loginStatus = localStorage.getItem('islogged');
+  //   setIsAdmin(adminStatus === 'true');
+  //   setIsLogged(loginStatus === 'true');
+  // }, []);
 
   return (
     <Suspense fallback={<Spinner />}>
@@ -130,8 +131,10 @@ const App = () => {
       <Toaster
         position="top-right"
         reverseOrder={false}
+        
         toastOptions={{
           duration: 5000, // Default duration for all toasts
+        
         }}
       />
     </Suspense>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Stack,
@@ -7,12 +7,51 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { FaCheck, FaRedo } from "react-icons/fa";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Others = () => {
-  const [otherInfo, setOtherInfo] = useState("Not Specified");
+  const [otherInfo, setOtherInfo] = useState("");
+  const [userId, setUserId] = useState("");
 
-  const handleReset = () => setOtherInfo("");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = sessionStorage.getItem("userData");
+        const { _id: userId } = JSON.parse(userData);
+
+        const response = await axios.get(`http://localhost:5000/api/others/${userId}`);
+        if (  response.data.info) {
+          setOtherInfo(response.data.info);
+        }
+      } catch (error) {     
+        console.warn("No existing record found:", error);
+       
+      }
+    };      
+
+    fetchData();
+  }, []);
+
+
+   const handleReset = () => setOtherInfo("Not Specified");
+
+   const handleSubmit = async () => {
+     try {
+const userData = sessionStorage.getItem("userData");
+      const { _id: userId } = JSON.parse(userData);
+
+       const response = await axios.post("http://localhost:5000/api/others", { userId, info: otherInfo });
+       
+       if (response.status === 200) {
+         toast.success("User info updated successfully!");
+       } else {
+         toast.error(`Error: ${response.data.message}`);
+       }
+     } catch (error) {
+       console.error("Error submitting info:", error);
+     }
+   };
 
   return (
     <Box
@@ -69,7 +108,7 @@ const Others = () => {
         <Button
           variant="contained"
         
-          onClick={() => alert("Submitted: " + otherInfo)}
+          onClick={handleSubmit}
           sx={{
             backgroundColor: "#1976d2",
               textTransform:'capitalize',

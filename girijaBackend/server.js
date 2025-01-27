@@ -9,7 +9,7 @@ const familyReligiousRouter = require("./routes/familyReligious");
 const educationRoutes = require("./routes/Education");
 const lifeStyle = require("./routes/LifeStyle");
 const parentsPrefer = require("./routes/ParentPrefer");
-// const photo = require("./routes/Photo");
+const others = require("./routes/Others")
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.use("/api", familyReligiousRouter);
 app.use("/api", educationRoutes);
 app.use("/api", lifeStyle);
 app.use("/api", parentsPrefer);
-// app.use("/api", photo);
+app.use("/api", others);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

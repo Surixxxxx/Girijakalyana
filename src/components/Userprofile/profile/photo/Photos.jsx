@@ -88,8 +88,10 @@ const {setprofileImage}=useStore();
         fontFamily: "Roboto, sans-serif",
         maxWidth: "600px",
         margin: "auto",
+        display:'flex'
       }}
     >
+      
       <Card
         sx={{
           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
@@ -97,6 +99,7 @@ const {setprofileImage}=useStore();
           padding: "16px",
         }}
       >
+        <Box >
         <Box
           sx={{
             display: "flex",
@@ -107,7 +110,7 @@ const {setprofileImage}=useStore();
           {file ? (
             <CardMedia
               component="img"
-              height="400"
+              height="450"
               image={file}
               alt="Uploaded Preview"
               sx={{
@@ -144,7 +147,7 @@ const {setprofileImage}=useStore();
           >
             * Please upload high-resolution images only (Max size: 10 MB)
           </Typography>
-
+          </Box>
           <Box display="flex" gap={1}>
             <Button
               variant="outlined"
