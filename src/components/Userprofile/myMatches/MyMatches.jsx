@@ -11,29 +11,35 @@ import {
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import mathes from "../../Userprofile/myMatches/mathes.jpeg";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import axios from "axios";
 
 const MyMatches = () => {
   const navigate = useNavigate();
   const [userCard, setUserCard] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 8;
-  const totalItems = 38; // Total number of items (assume 50 for example)
 
   const handleModifyButton = () => {
     navigate("/user/profile");
   };
+  const loggedUserId = localStorage.getItem("userId");
+
+  // console.log("======", loggedUserId)
 
   const getData = async (page) => {
     try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/albums?_page=${page}&_limit=${itemsPerPage}`
-      );
-      const data = await response.json();
-      setUserCard(data.slice(0, 20));
+      const response = await axios.get("http://localhost:5000/api/users", {
+        params: {
+          page: page,
+          limit: itemsPerPage,
+        },
+      });
+      setUserCard(response.data.users); // Assuming API returns { users: [...] }
+      setTotalItems(response.data.totalItems); // Assuming API returns totalItems
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -48,48 +54,8 @@ const MyMatches = () => {
     getData(currentPage);
   }, [currentPage]);
 
-  const renderPagination = () => {
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const visiblePages = [];
-    const maxVisible = 5; // Max visible pages around the current page
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - 1 && i <= currentPage + 1)
-      ) {
-        visiblePages.push(i);
-      } else if (
-        (i === currentPage - 2 && currentPage > 3) ||
-        (i === currentPage + 2 && currentPage < totalPages - 2)
-      ) {
-        visiblePages.push("...");
-      }
-    }
-
-    return visiblePages.map((page, index) =>
-      page === "..." ? (
-        <Typography key={index} variant="body1" sx={{ marginX: 1 }}>
-          ...
-        </Typography>
-      ) : (
-        <Button
-          key={page}
-          variant={page === currentPage ? "contained" : "outlined"}
-          color="primary"
-        
-          sx={{ marginX: 1,padding:1,width:'40px',height:'35px',border:'none' }}
-          onClick={() => handlePageChange(page)}
-        >
-          {page}
-        </Button>
-      )
-    );
-  };
-
   return (
-    <Box sx={{ padding: 3, backgroundColor: "#f9f9f9",marginBottom:'10px',paddingLeft:0 }}>
+    <Box sx={{ padding: 3, backgroundColor: "#f9f9f9", marginBottom: "10px" }}>
       {/* Header Section */}
       <Box
         sx={{
@@ -100,9 +66,13 @@ const MyMatches = () => {
         }}
       >
         <Typography variant="h4" fontWeight="bold" color="#34495e">
-          My Partner Preferences
+          My Matches
         </Typography>
-        <Button variant="contained" sx={{background:'#34495e',color:'#fff'}} onClick={handleModifyButton}>
+        <Button
+          variant="contained"
+          sx={{ background: "#34495e", color: "#fff" }}
+          onClick={handleModifyButton}
+        >
           Modify
         </Button>
       </Box>
@@ -113,66 +83,67 @@ const MyMatches = () => {
         direction="row"
         spacing={1}
         flexWrap="wrap"
-        justifyContent={'space-evenly'}
-        sx={{  marginTop: 2,gap:3,paddingLeft:0 }}
-      >
-        {userCard.map((card, index) => (
+        justifyContent={"space-evenly"}
+        sx={{ marginTop: 2, gap: 3 }}
+      > {userCard
+        .filter((card) => card.userId !== loggedUserId) // Filter out the logged-in user's card
+        .map((card) => (
           <Card
-            key={index}
+            key={card.userId}
             sx={{
-              width: "220px",
+              width: "270px",
               marginBottom: "90px",
-              height:'380px',
-              borderRadius: 2,
+              height: "380px",
+              borderRadius: 1,
               boxShadow: 3,
               textAlign: "center",
-              padding: 2,
+              padding: 1,
             }}
           >
             <CardMedia
               component="img"
-              height="180"
-              image={mathes}
+              height="230px"
+              image={card.profileImg || "/default-placeholder.png"} // Default image if profileImg is missing
               alt="user-dp"
               sx={{
-                borderRadius: "3%",
-                margin: "0 auto",
-                marginBottom: 2,
+                borderRadius: "2%",
+             
               }}
             />
             <CardContent>
-              <Typography variant="h6" fontWeight="bold" color="#34495e">
-                Naveen
+              <Typography variant="h6" fontWeight="bold" color="#34495e" textTransform={'capitalize'}>
+                {`${card.firstName} ${card.lastName || ""}`}
               </Typography>
-              <Typography color="text.primary">Bangalore</Typography>
+              <Typography color="text.primary">{card.address || "N/A"}</Typography>
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "space-around",
-                  marginTop: 1,
+                  justifyContent: "space-between",
+                  marginTop: 0,
                 }}
               >
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
-                    {card.id}
+                  <Typography variant="body1" fontWeight="bold"  sx={{color:'black'}}>
+                    {card.parentPrefer?.toAge || "N/A"}
                   </Typography>
-                  <Typography variant="caption" color="text.primary">
+                  <Typography variant="caption" c sx={{color:'gray'}}>
                     Age
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
-                    5.4
+                  <Typography variant="body1" fontWeight="bold"  sx={{color:'black'}}>
+                    {card.parentPrefer?.fromHeight || "N/A"}
                   </Typography>
-                  <Typography variant="caption" color="text.primary">
+                  <Typography variant="caption" sx={{color:'gray'}}>
                     Height
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography variant="body1" fontWeight="bold">
-                    SGM333
+                  <Typography variant="body1" fontWeight="bold"  sx={{color:'black'}}>
+                    {card.userId}
+                
                   </Typography>
-                  <Typography variant="caption" color="text.primary">
+                  <Typography variant="caption" sx={{color:'gray'}}>
                     Reg No
                   </Typography>
                 </Box>
@@ -186,21 +157,21 @@ const MyMatches = () => {
       <Box
         sx={{
           display: "flex",
-          justifySelf:'end',
+          justifyContent: "end",
           alignItems: "center",
           margin: 2,
-
         }}
       >
         <IconButton
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           color="primary"
-          
         >
           <FaChevronLeft />
         </IconButton>
-        {renderPagination()}
+        <Button variant="body1" sx={{ marginX: 2,border:1 }}>
+           {currentPage}
+        </Button>
         <IconButton
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === Math.ceil(totalItems / itemsPerPage)}

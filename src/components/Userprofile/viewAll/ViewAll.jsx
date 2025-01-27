@@ -176,7 +176,7 @@ const ViewAll = () => {
         },
       }}
     >
-      <DialogContent sx={{ padding: "0px", backgroundColor: "#34495e" }}>
+      <DialogContent sx={{ padding: "0px", backgroundColor: "#34495e" }} className="dialog-content">
         <Box className="user-name-age" >
           <DialogActions />
         </Box>

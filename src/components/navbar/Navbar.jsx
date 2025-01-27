@@ -128,7 +128,7 @@ const handleLogin = async () => {
     localStorage.setItem('lastName', user.lastName);
     localStorage.setItem('email', user.email);
     localStorage.setItem('mobile', user.mobile);
-  localStorage.setItem('profileImg', JSON.stringify( user.profileImg));
+    localStorage.setItem('profileImg', JSON.stringify( user.profileImg));
   sessionStorage.setItem('userData', JSON.stringify(user));
 
     toast.success('Login successful!');

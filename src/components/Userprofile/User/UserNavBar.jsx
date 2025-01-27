@@ -48,26 +48,38 @@ const UserNavBar = () => {
   const [file, setFile] = useState("");
 
   const profileImg = localStorage.getItem("profileImg");
+  // console.log("====!!!>", profileImg)
   useEffect(() => {
     if (profileImg) {
-     
-      convertFromBase64(JSON.parse(profileImg), "profileImg")
-        .then((convertedFile) => {
-          setFile(convertedFile);
-        })
-        .catch((error) => {
-          console.error("Error converting Base64 to File:", error.message);
-        });
+      try {
+        
+        const parsedProfileImg = JSON.parse(profileImg);
+        if (parsedProfileImg.startsWith("data:image/")) {
+          convertFromBase64(parsedProfileImg, "profileImg")
+            .then((convertedFile) => {
+              setFile(convertedFile); 
+            })
+            .catch((error) => {
+              console.error("Error converting Base64 to File:", error.message);
+            });
+        } else {
+          console.error("Invalid Base64 image format.");
+        }
+      } catch (error) {
+        console.error("Error parsing profileImg from localStorage:", error.message);
+      }
     }
   }, [profileImage]);
+  
   const imageUrl = file ? URL.createObjectURL(file) : null;
-
+  
   useEffect(() => {
     const storedFirstName = localStorage.getItem("firstName");
-    if (storedFirstName) setFirstName(storedFirstName);
-   
+    if (storedFirstName) {
+      setFirstName(storedFirstName); // Update state with first name
+    }
   }, []);
-
+  
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -156,8 +168,8 @@ const UserNavBar = () => {
                 </Typography>
                 {
                   <Avatar
-                    src={imageUrl}
-                    alt={"profile img"}
+                  src={imageUrl ? imageUrl : firstName}
+                    alt={firstName}
                     sx={{
                       color: "black",
                       fontWeight: "bold",

@@ -14,3 +14,13 @@ body{
 button:hover{
     background-color:transparent ;
 }
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Hides the scrollbar */
+  }
+  
+  ::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+  }

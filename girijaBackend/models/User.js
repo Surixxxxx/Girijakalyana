@@ -18,10 +18,10 @@ const UserSchema = new mongoose.Schema({
   profileImg: { type: String, required: false },
   occupationCountry: { type: String, required: false },
   education: {
-    degree: { type: String, required: true },
-    occupation: { type: String, required: true },
-    income: { type: String, required: true },
-    occupationCountry: { type: String, required: true },
+    degree: { type: String, required: false },
+    occupation: { type: String, required: false },
+    income: { type: String, required: false },
+    occupationCountry: { type: String, required: false },
   },
   // Lifestyle data
   lifestyle: {
@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema({
     maritalStatus: { type: String, required: false },
     education: { type: String, required: false },
   },
-  info: { type: String, required: true },
+  info: { type: String, required: false },
 
 });
 

@@ -11,6 +11,17 @@
     flex-direction: column;
     
   }
+
+  /* Hide scrollbar for the dialog or any specific section */
+.dialog-content::-webkit-scrollbar {
+  display: none;  /* Hides the scrollbar */
+}
+
+.dialog-content {
+  overflow: hidden;  /* Prevent scrolling */
+}
+
+
   // .viewall-header-part {
   //   padding: 5px 10px;
   //   .viewall-user-name {
