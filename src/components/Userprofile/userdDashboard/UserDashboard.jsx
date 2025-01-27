@@ -23,12 +23,9 @@ const UserDashboard = () => {
   const cardsPerPage = 3;
 
   useEffect(() => {
-    const storedFirstName = sessionStorage.getItem('firstName');
-    const storedLastName = sessionStorage.getItem('lastName');
-    const storedMobail = sessionStorage.getItem('mobail');
-
-    console.log('Retrieved from sessionStorage:', { storedFirstName, storedLastName });
-
+    const storedFirstName = localStorage.getItem('firstName');
+    const storedLastName = localStorage.getItem('lastName');
+    const storedMobail = localStorage.getItem('mobail');
    
     if (storedFirstName) setFirstName(storedFirstName);
     // if (storedLastName) setLastName(storedLastName);

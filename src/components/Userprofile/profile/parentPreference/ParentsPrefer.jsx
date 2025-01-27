@@ -30,7 +30,7 @@ const ParentsPrefer = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userData = sessionStorage.getItem("userData");
+      const userData = localStorage.getItem("userData");
       if (!userData) {
         toast.error("No user data found. Please log in.");
         return;
@@ -69,7 +69,7 @@ const ParentsPrefer = () => {
   };
 
   const handleSubmit = async () => {
-    const userData = sessionStorage.getItem("userData");
+    const userData = localStorage.getItem("userData");
     if (!userData) {
       toast.error("No user data found. Please log in.");
       return;

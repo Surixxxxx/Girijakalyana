@@ -76,8 +76,8 @@ const App = () => {
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    const adminStatus = sessionStorage.getItem('isAdmin');
-    const loginStatus = sessionStorage.getItem('islogged');
+    const adminStatus = localStorage.getItem('isAdmin');
+    const loginStatus = localStorage.getItem('islogged');
     setIsAdmin(adminStatus === 'true');
     setIsLogged(loginStatus === 'true');
   }, []);

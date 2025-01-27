@@ -39,7 +39,6 @@ const FamilyReligious = mongoose.model('FamilyReligious', FamilyReligiousSchema)
 // Route for adding a new FamilyReligious record
 router.post('/addFamilyReligious', async (req, res) => {
   const { userId, fatherName, motherName, caste, nakshatra, rashi, gotra } = req.body;
-  console.log('Request Body:', req.body); 
   try {
     // Check if the user exists
     const userExists = await User.findById(userId);
@@ -80,7 +79,6 @@ router.post('/addFamilyReligious', async (req, res) => {
 // Route for updating an existing FamilyReligious record
 router.put('/updateFamilyReligious', async (req, res) => {
   const { userId, fatherName, motherName, caste, nakshatra, rashi, gotra } = req.body;
-  console.log('Request Body:', req.body); 
   try {
     // Check if the user exists
     const userExists = await User.findById(userId);

@@ -20,14 +20,19 @@ const About = ({ render }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = sessionStorage.getItem("userId"); // Get the user ID from sessionStorage
+        const userId = localStorage.getItem("userId"); // Get the user ID from localStorage
         if (!userId) {
           toast.error("User ID not found. Please log in again.");
           return;
         }
   
         // Fetch the data from the API
-        const response = await fetch(`http://localhost:5000/api/about/${userId}?cache_bust=${new Date().getTime()}`);
+        const response = await fetch(`http://localhost:5000/api/about/${userId}` , {
+          method : "GET", 
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         
         if (!response.ok) {
           toast.error("Failed to fetch user data.");
@@ -42,9 +47,9 @@ const About = ({ render }) => {
         setOccupationCountry(userData.occupationCountry || "");
         setLanguage(userData.language || "");
   
-        // Fetch and set other data (email and mobile) from sessionStorage
-        const storedMobile = sessionStorage.getItem("mobile");
-        const storedEmail = sessionStorage.getItem("email");
+        // Fetch and set other data (email and mobile) from localStorage
+        const storedMobile = localStorage.getItem("mobile");
+        const storedEmail = localStorage.getItem("email");
         if (storedEmail) setEmail(storedEmail);
         if (storedMobile) setMobile(storedMobile);
   
@@ -58,7 +63,7 @@ const About = ({ render }) => {
   }, []);
   
   const handleSave = async () => {
-    const userId = sessionStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
     if (!userId) {
       toast.error("User ID not found. Please login again.");
       return;

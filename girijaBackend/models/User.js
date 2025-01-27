@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema({
   address: { type: String, required: false },
   pincode: { type: String, required: false },
   language: { type: String, required: false },
+  profileImg: { type: String, required: false },
   occupationCountry: { type: String, required: false },
   education: {
     degree: { type: String, required: true },
@@ -33,16 +34,15 @@ const UserSchema = new mongoose.Schema({
     skinType: { type: String, required: false },
   },
   parentPrefer: {
-    caste: { type: String, required: false,  },
-    fromAge: { type: Number, required: false,   },
-    toAge: {  type: Number, required: false, },
-    fromHeight: {  type: String,required: false,   },
-    toHeight: {type: String, required: false, },
-    occupation: {  type: String,required: false, },
-    maritalStatus: {  type: String,required: false, },
-    education: { type: String,  required: false,  },
-   
-  }
+    caste: { type: String, required: false },
+    fromAge: { type: Number, required: false },
+    toAge: { type: Number, required: false },
+    fromHeight: { type: String, required: false },
+    toHeight: { type: String, required: false },
+    occupation: { type: String, required: false },
+    maritalStatus: { type: String, required: false },
+    education: { type: String, required: false },
+  },
 
 });
 

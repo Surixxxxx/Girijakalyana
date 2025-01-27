@@ -16,14 +16,13 @@ router.get("/about/:userId", async (req, res) => {
       }
   
       // Find user by ID
-      const user = await User.findById(userId, "address pincode occupationCountry language email mobile");
+      const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
       
       // Return the user data
       res.status(200).json(user);
-      console.log("api response",res);
     } catch (error) {
       console.error("Error fetching user data:", error);
       res.status(500).json({ message: "Error fetching user data", error: error.message });
@@ -33,6 +32,28 @@ router.get("/about/:userId", async (req, res) => {
   //for add
  
 // Middleware
+
+router.put('/updateImg/:id', async (req , res) => {
+    try {
+        const userId = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+        const {profileImg} = req.body
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: { profileImg } }, // Use $set to add or update the field
+            { new: true, upsert: true, runValidators: true }
+          );
+
+          if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+          }
+          res.json({ message: 'User updated successfully', user: updatedUser });
+        } catch (error) {
+          res.status(500).json({ message: 'Error updating user', error: error.message });
+        }
+      });
 
   
 router.patch("/update/:id", async (req, res) => {

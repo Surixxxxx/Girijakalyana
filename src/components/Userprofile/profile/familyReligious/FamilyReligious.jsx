@@ -43,7 +43,7 @@ const FamilyReligious = ({email}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = sessionStorage.getItem("userData");
+        const userData = localStorage.getItem("userData");
         const { _id: userId } = JSON.parse(userData);
 
         const response = await axios.get(`http://localhost:5000/api/familyReligious/${userId}`);
@@ -85,7 +85,7 @@ const FamilyReligious = ({email}) => {
     const updatedFields = { ...fields, [selectedField]: tempValue };
 
     try {
-      const userData = sessionStorage.getItem("userData");
+      const userData = localStorage.getItem("userData");
       const { _id: userId } = JSON.parse(userData);
 
       if (isNewRecord) {

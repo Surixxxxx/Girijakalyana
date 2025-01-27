@@ -19,12 +19,12 @@ const LifeStyle = ({ render }) => {
   const [bloodgroup, setBloodgroup] = useState("A+");
   const [bodyType, setBodyType] = useState("Average");
   const [skinType, setSkinType] = useState("Fair");
-  // Fetch user data from sessionStorage and load their lifestyle
+  // Fetch user data from localStorage and load their lifestyle
   useEffect(() => {
     const fetchData = async () => {
-      const userData = sessionStorage.getItem("userData");
+      const userData = localStorage.getItem("userData");
       if (!userData) {
-        console.error("No user data found in sessionStorage");
+        console.error("No user data found in localStorage");
         return;
       }
 
@@ -59,9 +59,9 @@ const LifeStyle = ({ render }) => {
 
   const handleSave = async () => {
     try {
-      const userData = sessionStorage.getItem("userData");
+      const userData = localStorage.getItem("userData");
       if (!userData) {
-        console.error("No user data found in sessionStorage");
+        console.error("No user data found in localStorage");
         return;
       }
 
@@ -77,8 +77,6 @@ const LifeStyle = ({ render }) => {
         bodyType,
         skinType,
       });
-
-      console.log("Lifestyle updated successfully:", response.data);
       toast.success("Lifestyle updated successfully!");
     } catch (error) {
       console.error("Error updating lifestyle:", error);

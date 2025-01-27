@@ -17,6 +17,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 import axios from 'axios'
 import toast from 'react-hot-toast';
+import { convertFromBase64 } from '../Userprofile/profile/photo/Photos';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -46,7 +47,6 @@ const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSendOtp = async () => {
-    console.log(email)
     try {
       const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
       toast.success(response.data.message);
@@ -56,7 +56,6 @@ const [error, setError] = useState('');
     }
   };
   const handleResetPassword = async () => {
-    console.log(email,newPassword,confirmPassword,otp);
   
    
     if (newPassword !== confirmPassword) {
@@ -103,7 +102,8 @@ const [error, setError] = useState('');
       const response = await axios.post('http://localhost:5000/api/admin/login', { email: enterUsername, password: enterPassword });
       const { token, user } = response.data;
       if (user.isAdmin) {
-        sessionStorage.setItem('token', token);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', user);
         toast.success('Admin Login successful!');
         navigate('/admin');
         handleCloseAdminDialog();
@@ -119,39 +119,37 @@ const [error, setError] = useState('');
   
  
 const handleLogin = async () => {
-  // console.log(loginData)
   try {
     const response = await axios.post('http://localhost:5000/api/auth/login', loginData);
-    console.log('API Response:', response.data);
     const { token, user } = response.data;
-    sessionStorage.setItem('token', token); // Store the token
-    sessionStorage.setItem('userId', user._id);
-    sessionStorage.setItem('firstName', user.firstName);
-    sessionStorage.setItem('lastName', user.lastName);
-    sessionStorage.setItem('email', user.email);
-    sessionStorage.setItem('mobile', user.mobile);
-    sessionStorage.setItem('userData', JSON.stringify(user));
+    localStorage.setItem('token', token); // Store the token
+    localStorage.setItem('userId', user._id);
+    localStorage.setItem('firstName', user.firstName);
+    localStorage.setItem('lastName', user.lastName);
+    localStorage.setItem('email', user.email);
+    localStorage.setItem('mobile', user.mobile);
+  localStorage.setItem('profileImg', JSON.stringify( user.profileImg));
+    // localStorage.setItem('userData', JSON.stringify(user));
 
     toast.success('Login successful!');
     navigate('/user/userdashboard'); // Redirect user to the dashboard or home page
   } catch (error) {
-    console.error(error.response?.data || error.message); // Log detailed error info
-    toast.error('Login failed: ' + (error.response?.data?.message || 'Unknown error'));
+    console.error( error.message); // Log detailed error info
+    toast.error('Login failed: ' + (error.message || 'Unknown error'));
   }
  
 };
   
   
   const handleRegister = async () => {
-    // console.log(registerData);
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', registerData);
       const { userId, email } = response.data.user;
 
       // Check if the userId is valid before storing it
       if (userId) {
-        sessionStorage.setItem('userId', userId); // Store the userId in sessionStorage
-        sessionStorage.setItem('email', email);
+        localStorage.setItem('userId', userId); // Store the userId in localStorage
+        localStorage.setItem('email', email);
         toast.success('Registration successful!');
       } else {
         toast.error('User ID not received from backend.');
@@ -159,7 +157,6 @@ const handleLogin = async () => {
 
       handleClose();
       navigate('/'); 
-      console.log(response.data.message)
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || 'Error registering user');

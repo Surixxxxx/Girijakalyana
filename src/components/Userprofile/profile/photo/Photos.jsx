@@ -1,39 +1,80 @@
 import React, { useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Grid,
-  Card,
-  CardMedia,
-  CardActions,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Typography, Card, CardMedia } from "@mui/material";
 import { FaUpload } from "react-icons/fa";
-// import userProfile from "../../../../../../images/user_page_images/profile-pic.jpg";
-// import uploadPic from "../../../../../../images/user_page_images/uploadimg.png";
-// import card1 from '../../../../assets/wallpaper/card1.jpg';
+import toast from "react-hot-toast";
+import useStore from "../../../../store";
+
+
+// Replace with your actual backend API endpoints
+const API_URL = "http://locahost:5000/api/uploads"; // Example for POST request
 
 const Photos = () => {
   const [file, setFile] = useState("");
   const fileInputRef = useRef(null);
-
+const {setprofileImage}=useStore();
   const chooseFile = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       if (
-        selectedFile.type.startsWith("") &&
-        selectedFile.size <= 2 * 1024 * 1024
+        selectedFile.type.startsWith("image/") &&
+        selectedFile.size <= 10 * 1024 * 1024
       ) {
-        setFile(selectedFile);
+        const base64 = await convertToBase64(selectedFile);
+        setFile(base64); // Store the Base64 string in state
       } else {
         setFile("");
-        alert("Please select a valid image file (max size: 2 MB).");
+        toast.warn("Please select a valid image file (max size: 10 MB).");
       }
+    }
+  };
+
+  // Helper function to convert file to Base64
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result); // Base64 string
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // POST API call to upload image
+  const uploadImage = async (data) => {
+    if (!file) return alert("No image selected for upload.");
+   
+    try {
+      const formData = new FormData();
+      formData.append("profileImg", file);
+      const userId =
+        localStorage.getItem("userId")
+
+      const response = await fetch(
+        `http://localhost:5000/api/updateImg/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            profileImg: file,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error uploading image");
+      }
+
+      toast.success("Profile Image Added SuccessFully")
+      localStorage.removeItem('profileImg');
+      localStorage.setItem('profileImg', JSON.stringify(file))
+      setprofileImage(JSON.stringify(file))
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -45,113 +86,139 @@ const Photos = () => {
         borderRadius: "12px",
         boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
         fontFamily: "Roboto, sans-serif",
+        maxWidth: "600px",
+        margin: "auto",
       }}
     >
-      {/* Grid Layout */}
-      <Grid container spacing={4}>
-        {/* Profile Picture Section */}
-        <Grid item xs={12} md={6}>
-          <Card
-            sx={{
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-              borderRadius: "12px",
-            }}
-          >
+      <Card
+        sx={{
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+          borderRadius: "12px",
+          padding: "16px",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          {file ? (
             <CardMedia
               component="img"
-              height="200"
-            //   image={card1}
-            //   alt="User Profile"
-              sx={{ borderRadius: "12px 12px 0 0" }}
+              height="400"
+              image={file}
+              alt="Uploaded Preview"
+              sx={{
+                borderRadius: "12px",
+                marginBottom: "16px",
+                width: "100%",
+                objectFit: "center",
+                overflowY: "auto",
+              }}
             />
-            <CardActions sx={{ justifyContent: "center", padding: "16px" }}>
-              <Typography variant="subtitle1" color="text.primary">
-                Current Profile Picture
-              </Typography>
-            </CardActions>
-          </Card>
-        </Grid>
-
-        {/* Upload Section */}
-        <Grid item xs={12} md={6}>
-          <Card
-            sx={{
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-              borderRadius: "12px",
-              padding: "16px",
-            }}
-          >
+          ) : (
             <Box
               sx={{
+                height: "200px",
+                width: "100%",
+                backgroundColor: "#e0e0e0",
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "12px",
+                marginBottom: "16px",
               }}
             >
-              <img
-                // src={uploadPic}
-                // alt="Upload"
-                style={{ width: "100px", marginBottom: "16px" }}
-              />
-              <Typography
-                variant="body2"
-                color="text.primary"
-                sx={{ marginBottom: "16px", textAlign: "center" }}
-              >
-                * Please upload high-resolution images only
+              <Typography variant="body2" color="text.secondary">
+                No Image Selected
               </Typography>
-
-              <TextField
-                disabled
-                placeholder="Choose File"
-                variant="outlined"
-                size="small"
-                fullWidth
-                sx={{ marginBottom: "16px" }}
-              />
-              <Button
-                variant="outlined"
-                startIcon={<FaUpload />}
-                onClick={chooseFile}
-                sx={{
-                  marginBottom: "16px",
-                  color: "#1976d2",
-                  borderColor: "#1976d2",
-                  "&:hover": {
-                    backgroundColor: "#f0f7ff",
-                  },
-                }}
-              >
-                Choose File
-              </Button>
-
-              <input
-                type="file"
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                accept="image/*"
-              />
-
-              <Button
-                variant="contained"
-                onClick={() => alert("Image saved!")}
-                sx={{
-                  backgroundColor: "#34495e",
-                  // "&:hover": {
-                  //   backgroundColor: "#1976d2",
-                  //   textTransform:'capitalize'
-                  // },
-                }}
-              >
-                Save
-              </Button>
             </Box>
-          </Card>
-        </Grid>
-      </Grid>
+          )}
+
+          <Typography
+            variant="body2"
+            color="text.primary"
+            sx={{ marginBottom: "16px", textAlign: "center" }}
+          >
+            * Please upload high-resolution images only (Max size: 10 MB)
+          </Typography>
+
+          <Box display="flex" gap={1}>
+            <Button
+              variant="outlined"
+              startIcon={<FaUpload />}
+              onClick={chooseFile}
+              sx={{
+                color: "#1976d2",
+                borderColor: "#1976d2",
+                "&:hover": {
+                  backgroundColor: "#f0f7ff",
+                },
+              }}
+            >
+              Choose File
+            </Button>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              accept="image/*"
+            />
+
+            <Button
+              variant="contained"
+              size="small"
+              onClick={uploadImage}
+              sx={{
+                height: "35px",
+                backgroundColor: "#34495e",
+                "&:hover": {
+                  backgroundColor: "#1976d2",
+                },
+              }}
+            >
+              Save
+            </Button>
+          </Box>
+        </Box>
+      </Card>
     </Box>
   );
 };
 
 export default Photos;
+
+export const convertFromBase64 = (base64String, fileName) => {
+  return new Promise((resolve, reject) => {
+    try {
+      // Extract the content type and Base64 data from the Base64 string
+      const matches = base64String.match(/^data:(.+);base64,(.+)$/);
+
+      if (!matches) {
+        return reject(new Error("Invalid Base64 string format"));
+      }
+
+      const contentType = matches[1]; // Extract MIME type (e.g., "image/png")
+      const base64Data = matches[2]; // Extract the Base64-encoded string
+
+      // Decode the Base64 string
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      // Create a File object
+      const file = new File([byteArray], fileName, { type: contentType });
+      resolve(file);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

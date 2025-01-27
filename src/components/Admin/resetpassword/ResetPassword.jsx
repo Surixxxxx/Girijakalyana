@@ -77,7 +77,6 @@ const ResetPassword = () => {
 
   const handlePasswordReset = () => {
     // Logic for password reset can be added here
-    console.log("Password reset for:", selectedUser);
     handleCloseDialog();
   };
 

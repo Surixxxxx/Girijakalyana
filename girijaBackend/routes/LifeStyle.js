@@ -35,7 +35,6 @@ router.post("/lifeStyle", async (req, res) => {
     try {
       // Validate the userId as a proper ObjectId
       if (!mongoose.Types.ObjectId.isValid(userId)) {
-        console.log("Recieved userId",userId)
         return res.status(400).json({ message: "Invalid userId. Must be a valid ObjectId." });
       }
   
